@@ -12,15 +12,16 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux'
 import reducers from './reducers/index'
 
-
 const store = createStore(reducers)
 
 export default class App extends Component {
   render() {
     return (
-      <Provider store = {store}>
-        <Routes/>
-      </Provider>
+      
+    <Provider store = {store}>
+      <Routes/>
+    </Provider>
+
     );
   }
 }

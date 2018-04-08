@@ -1,5 +1,7 @@
 import { StackNavigator } from 'react-navigation'
-import LoginScreen from '../screens/login/LoginScreen'
+import LoginScreen from '../screens/LoginForm/LoginScreen'
+import ConfirmForm from '../screens/ConfirmForm/ConfirmForm'
+import InfoForm from '../screens/InfoForm/InfoForm';
 
 const LoginStack = StackNavigator(
     {
