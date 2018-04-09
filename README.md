@@ -1,1 +1,2 @@
-# easy_hair
+# Install node modules
+# npm install
