@@ -16,6 +16,10 @@ import reducers from './reducers/index'
 const store = createStore(reducers)
 
 export default class App extends Component {
+
+  componentWillMount() {
+  }
+
   render() {
     return (
       <Provider store = {store}>
