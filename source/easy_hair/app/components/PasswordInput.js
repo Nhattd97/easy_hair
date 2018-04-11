@@ -7,7 +7,7 @@ class PasswordInput extends Component {
         super(props);
         this.state = {
             text: '',
-            showPass: false,
+            showPass: true,
             error: false,
         }
     }
@@ -39,6 +39,7 @@ class PasswordInput extends Component {
                         secureTextEntry={!this.state.showPass}
                         autoFocus={this.props.autoFocus}
                         underlineColorAndroid='transparent'
+                        keyboardType = {this.props.keyboardType}
                     />
                 </View>
             </View>
@@ -52,7 +53,8 @@ PasswordInput.defaultProps = {
     placeholder: 'Enter text',
     setValue: (text) => { },
     disabledError: false,
-    autoFocus: false
+    autoFocus: false,
+    keyboardType : 'phone-pad'
 };
 
 const styles = StyleSheet.create({

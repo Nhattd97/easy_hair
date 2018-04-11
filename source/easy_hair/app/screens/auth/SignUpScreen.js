@@ -12,14 +12,13 @@ import {
 import firebase from 'react-native-firebase'
 
 
-
 export default class SignUp extends Component {
   constructor(props) {
     super(props)
     this.state = {
       verificationCode : '',
       confirmResult : '',
-      phone : '',
+      phone : '1683576727',
       user : null
     }
   }
@@ -32,8 +31,8 @@ export default class SignUp extends Component {
         // This means that the SMS has been sent to the user
         // You need to:
         //   1) Save the `confirmResult` object to use later
-        alert('sent!')
         this.setState({ confirmResult });
+        alert('sent!')
         //   2) Hide the phone number form
         //   3) Show the verification code form
       })
@@ -48,18 +47,19 @@ export default class SignUp extends Component {
   onVerificationCode = () => {
     const { confirmResult, verificationCode } = this.state;
     const email = `${this.state.phone}@domain.com`
-    const password = '123456'
+    const password = '12345678'
     confirmResult.confirm(verificationCode)
       .then((user) => {
+        
+        this.setState({ user}) 
+        this.state.user.updatePassword(password)
+        .then(() => {
+          alert('changed!')
+        })
+        .catch((error) => {
+          alert(error)
+        })
         alert("success!")
-        this.setState({ user : firebase.auth().currentUser()}) 
-        if(user) {
-          user.delete().then(() => {
-            alert('deleted!')
-          }).catch((error) => {
-
-          })
-        }
         // firebase.auth().createUserWithEmailAndPassword(email, password)
         //   .then((user) => {
     
@@ -83,7 +83,7 @@ export default class SignUp extends Component {
       })
       .catch((error) => {
         const { code, message } = error;
-        alert(code)
+        //alert(code)
         // For details of error codes, see the docs
         // The message contains the default Firebase string
         // representation of the error

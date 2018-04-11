@@ -13,33 +13,25 @@ import {
     ActivityIndicator
  } from 'react-native'
  import firebase from 'react-native-firebase'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as AuthActions from '../../actions/AuthAction'
 
- export default class LoginScreen extends Component {
+class LoginScreen extends Component {
     constructor (props) {
         super(props);
         this.state = {
             route: 'Login',
-            username: '',
+            phone: '',
             password: '',
-            isLoading : false
+            isLoading : false,
+            text : ''
         };
-    }
-
-    signup = async (email,pass) => {
-        try {
-            await firebase.auth().createUserWithEmailAndPassword(email,pass);
-            firebase.auth().signinwithp
-            Alert.alert("Account created!")
-        }catch(error) {
-            alert(error)
-        }
-
     }
 
     signInAsync = async () => {
         try{
             await AsyncStorage.setItem('isLoggedIn', true.toString());
-            //Alert.alert("Logged In!");
             this.setState({ isLoading : false })
             this.props.navigation.navigate('App')
         }catch(error) {
@@ -48,41 +40,17 @@ import {
         
     }
 
-    async login(email, pass) {
-    
-        try {
-            await firebase.auth().signInWithEmailAndPassword(email, pass);
-    
-            // Navigate to the Home page
-            //this.props.navigation.navigate("home")
-    
-        } catch (error) {
-            Alert.alert(error.toString())
+    login() {
+        const user = {
+            email : `${this.state.phone}@domain.com` ,
+            password : this.state.password
         }
-    
-    }
-
-    onLogin = (email, password) => {
-        this.setState({isLoading : true})
-        firebase.auth().signInWithEmailAndPassword(email, password)
-          .then((user) => {
-    
-            // Navigate to the Home page
-            //this.props.navigation.navigate("home")
+        this.props.AuthActions.login(user,() => {
             this.signInAsync()
-            // If you need to do anything with the user, do it here
-            // The user will be logged in automatically by the 
-            // `onAuthStateChanged` listener we set up in App.js earlier
-          })
-          .catch((error) => {
-            //const { code, message } = error;
-            Alert.alert(error.toString())
-            this.setState({isLoading : false})
-            // For details of error codes, see the docs
-            // The message contains the default Firebase string
-            // representation of the error
-          });
-      }
+        },(error) => {
+            alert(error)
+        })
+    }
  
     render () {
         return (
@@ -98,9 +66,9 @@ import {
                     autoCapitalize='none'
                     autoCorrect={false} 
                     autoFocus={true} 
-                    keyboardType='email-address'
+                    keyboardType='phone-pad'
                     value={this.state.username} 
-                    onChangeText={(text) => this.setState({ username: text })} />
+                    onChangeText={(text) => this.setState({ phone: text })} />
                 <TextInput 
                     placeholder='Password'
                     autoCapitalize='none'
@@ -109,13 +77,27 @@ import {
                     value={this.state.password} 
                     onChangeText={(text) => this.setState({ password: text })} />
                 <View style={{margin: 7}}/>
-                <Button onPress = {() => this.onLogin(this.state.username,this.state.password)}  title={this.state.route}/>
+                <Button onPress = {() => this.login()}  title={this.state.route}/>
                 <Button onPress = {() => {this.props.navigation.navigate('Register')}} title = {'Đăng ký'}/>
                 <Button onPress = {() => {this.props.navigation.navigate('ForgotPassword')}} title = {'Quên mật khẩu'}/>
             </ScrollView>
         );
     }
  }
+
+ function mapStateToProps(state) {
+    return {
+       text : state.Auth.text,
+    };
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        AuthActions: bindActionCreators(AuthActions, dispatch),
+    };
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(LoginScreen)
+
 
  const styles = StyleSheet.create({
      container : {

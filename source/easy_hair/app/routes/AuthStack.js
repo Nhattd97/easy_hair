@@ -6,6 +6,9 @@ import RegisterCodeScreen from '../screens/auth/RegisterCodeScreen'
 import CreatePasswordScreen from '../screens/auth/CreatePasswordScreen'
 import RecoveryCodeScreen from '../screens/auth/RecoveryCodeScreen'
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen'
+import SignInScreen from '../screens/auth/SignInScreen'
+import ConfirmScreen from '../screens/auth/ConfirmScreen'
+import InfoScreen from '../screens/auth/InfoScreen'
 
 const AuthStack = StackNavigator(
     {
@@ -29,10 +32,19 @@ const AuthStack = StackNavigator(
         },
         ForgotPassword : {
             screen : ForgotPasswordScreen
+        },
+        SignIn : {
+            screen : SignInScreen
+        },
+        Confirm : {
+            screen : ConfirmScreen
+        },
+        Info : {
+            screen : InfoScreen
         }
     },
     {
-        initialRouteName : 'Login'
+        initialRouteName : 'ForgotPassword'
     }
 )
 

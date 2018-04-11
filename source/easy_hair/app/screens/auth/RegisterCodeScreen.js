@@ -17,13 +17,9 @@ import { connect } from 'react-redux';
 import { FONT } from '../../const';
 
 // Import actions
-
+import * as AuthActions from '../../actions/AuthAction'
 // Import components
 import { HeaderCard, Input, PasswordInput } from '../../components';
-
-// Import logics
-
-//import strings
 
 class RegisterCodeScreen extends Component {
     static navigationOptions = {
@@ -60,7 +56,14 @@ class RegisterCodeScreen extends Component {
     }
 
     donePress() {
-        //this.props.navigation.navigate('')
+        this.props.confirmResult.confirm(this.state.code.text)
+      .then((user) => {
+        this.props.AuthActions.updateUser(user)
+        this.props.navigation.navigate('Info')
+      })
+      .catch((error) => {
+        const { code, message } = error;
+      });
     }
 
     render() {
@@ -111,17 +114,16 @@ class RegisterCodeScreen extends Component {
 }
 function mapStateToProps(state) {
     return {
-       
+       confirmResult : state.Auth.confirmResult
     };
 }
 function mapDispatchToProps(dispatch) {
     return {
-        
+        AuthActions : bindActionCreators(AuthActions,dispatch)
     };
 }
 
-//export default connect(mapStateToProps, mapDispatchToProps)(RecoveryCodeScreen);
-export default RegisterCodeScreen
+export default connect(mapStateToProps, mapDispatchToProps)(RegisterCodeScreen);
 
 const styles = StyleSheet.create({
     container: {
@@ -148,7 +150,7 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         position: 'relative',
         height: 63,
-        backgroundColor: '#1572B8'
+        backgroundColor: '#2D9CDB'
     },
     headerImage: {
         backgroundColor: '#FFFFFF'

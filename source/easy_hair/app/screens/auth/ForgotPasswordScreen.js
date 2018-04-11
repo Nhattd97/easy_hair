@@ -16,14 +16,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
 // Import actions
-
+import * as AuthActions from '../../actions/AuthAction'
 // Import components
 import { HeaderCard, TextInputWithLabel } from '../../components';
 import { FONT } from '../../const';
 
-// Import logics
-
-//import string
 
 class ForgotPasswordScreen extends Component {
     static navigationOptions = {
@@ -43,7 +40,7 @@ class ForgotPasswordScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: {
+            phone: {
                 text: '',
                 error: false
             },
@@ -52,16 +49,21 @@ class ForgotPasswordScreen extends Component {
     }
 
 
-    getEmail(email) {
-        this.setState({ email });
+    getEmail(phone) {
+        this.setState({ phone });
 
     }
 
     recoveryCodePress() {
-        this.props.navigation.navigate('RecoveryCode')
+        //formatPhoneNumber = `+84${this.state.phone.text}`
+        this.props.AuthActions.sendCode(this.state.phone.text,() => {
+            this.props.navigation.navigate('RecoveryCode')
+        }, (error) => {
+            alert(error)
+        })
     }
     render() {
-        if (this.state.email.text === '' || this.state.email.error) this.state.active = false
+        if (this.state.phone.text === '' || this.state.phone.error) this.state.active = false
         else this.state.active = true
         return (
             <ScrollView style={styles.container}>
@@ -100,22 +102,18 @@ class ForgotPasswordScreen extends Component {
         );
     }
 }
-// function mapStateToProps(state) {
-//     return {
-//         // userId: state.User.userId,
-//         // accountId: state.User.accountId,
-//         // userJwt: state.User.jwt,
-//         // profile: state.User.profile
-//     };
-// }
-// function mapDispatchToProps(dispatch) {
-//     return {
-//         // UserActions: bindActionCreators(UserActions, dispatch),
-//     };
-// }
+function mapStateToProps(state) {
+    return {
+        
+    };
+}
+function mapDispatchToProps(dispatch) {
+    return {
+        AuthActions : bindActionCreators(AuthActions,dispatch)
+    };
+}
 
-//export default connect(mapStateToProps, mapDispatchToProps)(ForgotPasswordScreen);
-export default ForgotPasswordScreen
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPasswordScreen);
 
 const styles = StyleSheet.create({
     container: {

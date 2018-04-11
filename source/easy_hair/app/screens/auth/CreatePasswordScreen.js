@@ -12,13 +12,12 @@ import {
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { FONT } from '../../const';
+import firebase from 'react-native-firebase'
 
 // Import actions
-
 // Import components
 import { HeaderCard, PassInputWithLabel, PasswordInput, Button } from '../../components';
 
-//import String
 //import Spinner from '../../components/Spinner';
 
 class CreatePasswordScreen extends Component {
@@ -39,20 +38,16 @@ class CreatePasswordScreen extends Component {
             isLoading: false,
             visible: false,
             error: '',
-            newPass: '',
-            retypePass: '',
-            hiddenNew: true,
-            hiddenRetype: true,
             newPass: {
-                text: '',
-                securePass1: false,
-                securePass2: false
+                text : '',
+                error : false
             },
             retypePass: {
-                text: '',
-                error: false
+                text : '',
+                error : false
             },
-
+            hiddenNew: true,
+            hiddenRetype: true,
         }
     }
 
@@ -66,7 +61,18 @@ class CreatePasswordScreen extends Component {
     }
 
     onButtonPress() {
-        
+        if(this.state.newPass.text === this.state.retypePass.text) {
+            this.props.user.updatePassword(this.state.newPass.text)
+            .then(() => {
+                alert('changed password!')
+                firebase.auth().signOut()
+                this.props.navigation.navigate("Login")
+            })
+            .catch( error => {
+                alert(error)
+            } )
+        }
+           
     }
 
     render() {
@@ -83,35 +89,31 @@ class CreatePasswordScreen extends Component {
                 <View style={styles.footer}>
                     <PasswordInput
                         inputStyle={{ marginBottom: 20 }}
-                        inputContainer={{
-                            borderColor: '#D5D9DE', borderWidth: 1, borderRadius: 6, shadowColor: '#AAC1C5',
-                            shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.36
-                        }}
+                        inputContainer={styles.inputContainer}
                         inputStyleLabel={{ color: '#757575' }}
                         typeName={'Mật khẩu'}
                         placeholder={'Mật khẩu'}
                         setValue={this.setNewPass.bind(this)}
                         disabledError={false}
                         autoFocus={true}
+                        keyboardType = {'default'}
                     />
                     <PasswordInput
                         inputStyle={{ marginBottom: 20 }}
-                        inputContainer={{
-                            borderColor: '#D5D9DE', borderWidth: 1, borderRadius: 6, shadowColor: '#AAC1C5',
-                            shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.36
-                        }}
+                        inputContainer={styles.inputContainer}
                         inputStyleLabel={{ color: '#757575' }}
                         typeName={'Nhập lại mật khẩu'}
                         placeholder={'Nhập lại mật khẩu'}
                         setValue={this.retypePass.bind(this)}
                         disabledError={false}
                         autoFocus={false}
+                        keyboardType = {'default'}
                     />
                     <View style={styles.buttonSection}>
                         <Button
                             isLoading={this.state.isLoading}
                             label={'Xác nhận'}
-                            onPress={this.onButtonPress.bind(this)}
+                            onPress={() => this.onButtonPress()}
                             disabled={!(this.state.newPass.text && this.state.retypePass.text)}
                         />
                     </View>
@@ -126,9 +128,8 @@ class CreatePasswordScreen extends Component {
     }
 }
 function mapStateToProps(state) {
-
     return {
-      
+        user : state.Auth.user
     };
 }
 
@@ -138,14 +139,21 @@ function mapDispatchToProps(dispatch) {
     };
 }
 
-//export default connect(mapStateToProps, mapDispatchToProps)(CreatePasswordScreen);
-export default CreatePasswordScreen
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePasswordScreen);
 
 const styles = StyleSheet.create({
     container: {
         position: 'relative',
         flex: 1,
         backgroundColor: '#F0F5F6',
+    },
+    inputContainer : {
+        borderColor: '#D5D9DE', 
+        borderWidth: 1, 
+        borderRadius: 6, 
+        shadowColor: '#AAC1C5',
+        shadowOffset: { width: 0, height: 1 }, 
+        shadowOpacity: 0.36
     },
     textHeader: {
         marginLeft: 10,
