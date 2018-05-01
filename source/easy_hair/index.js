@@ -1,4 +1,4 @@
 import { AppRegistry } from 'react-native';
-import App from './app/App';
+import MapScreen from './app/screens/MapScreen.js';
 
-AppRegistry.registerComponent('easy_hair', () => App);
+AppRegistry.registerComponent('easy_hair', () => MapScreen);
