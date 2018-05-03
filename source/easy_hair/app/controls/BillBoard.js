@@ -18,34 +18,42 @@ export default class BillBoard extends Component {
         this.props =
             {
                 title: '',
-                srcForSalonImage: '',
+                source: '',
                 rating: '',
             };
 
         this.state =
         {
             viewLength: 200,
-        }
+            initialRender: true
+        };
 
+        this.onLoad = this.onLoad.bind(this);
     };
 
     componentWillMount()
     {
         if(this.props.title.length < 11)
         {
-            this.setState({viewLength: 170});
+            this.setState({viewLength: 180});
         }
         else
         {
-            this.setState({viewLength: this.props.title.length*11 + 50});
+            this.setState({viewLength: this.props.title.length*12 + 50});
         }
+    }
+
+    onLoad() {
+        this.setState({initialRender: false});
     }
 
     render() {
         return (
             <View style={{width: this.state.viewLength, height: 50, flexDirection: 'row'}}>
-                <Image source={this.props.srcForSalonImage}
-                       style={style.image}>
+                <Image source={this.props.source}
+                       style={style.image}
+                       key={`${this.state.initialRender}`}
+                       onLoad={this.onLoad}>
                 </Image>
 
                 <View style={{flexDirection: 'column'}}>
@@ -55,7 +63,7 @@ export default class BillBoard extends Component {
 
                     <View style={{flexDirection: 'row'}}>
                         <Text style={style.point}>
-                            4.1
+                            {this.props.rating}
                         </Text>
 
                         <Rating
