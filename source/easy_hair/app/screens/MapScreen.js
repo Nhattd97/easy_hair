@@ -4,12 +4,13 @@
 
 import React, {Component} from 'react';
 import {
-    View
+    View,
 } from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, {Marker} from 'react-native-maps';
 import CustomMarker from '../controls/CustomMarker.js'
 
 export default class MapScreen extends Component<Props> {
+
 
     constructor(props) {
         super(props);
@@ -28,8 +29,51 @@ export default class MapScreen extends Component<Props> {
                     longitudeDelta: 0.01,
                 },
 
+                location: {
+                    latitude: 10.8884278,
+                    longitude: 106.7765558,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                },
+
                 markers: arrayMarkers,
             }
+    }
+
+    watchID: ?number = null;
+
+    componentWillMount() {
+        navigator.geolocation.getCurrentPosition((position) => {
+                let lat = parseFloat(position.coords.latitude);
+                let long = parseFloat(position.coords.longitude);
+
+                let location = {
+                    latitude: lat,
+                    longitude: long,
+                    latitudeDelta: LAT_DELTA,
+                    longitudeDelta: LONG_DELTA,
+                };
+
+                this.setState({location: location});
+
+            },
+            error => alert(JSON.stringify(error)),
+            {enableHighAccuracy: false, timeout: 20000}
+        );
+
+        this.watchID = navigator.geolocation.watchPosition((position) => {
+            let lat = parseFloat(position.coords.latitude);
+            let long = parseFloat(position.coords.longitude);
+
+            let location = {
+                latitude: lat,
+                longitude: long,
+                latitudeDelta: LAT_DELTA,
+                longitudeDelta: LONG_DELTA,
+            };
+
+            this.setState({location: location});
+        },);
     }
 
 
@@ -54,8 +98,10 @@ export default class MapScreen extends Component<Props> {
             markers.push(
                 <CustomMarker
                     nameOfPlace={"Khang is so handsome!"}
-                    marker={{latitude: 10.884950,
-                        longitude: 106.780147,}}
+                    marker={{
+                        latitude: 10.884950,
+                        longitude: 106.780147,
+                    }}
                     key={2}
                     title={"This is a title"}
                     description={"This is a description"}
@@ -72,23 +118,39 @@ export default class MapScreen extends Component<Props> {
             <View style={{flex: 1}}>
                 <MapView
                     style={{flex: 1}}
-                    initialRegion={this.state.region}
+                    initialRegion={this.state.location}
                     onPress={this.onPress.bind(this)}>
 
                     {this.renderMarkers()}
 
                     <CustomMarker
                         nameOfPlace={"Khang is so handsome!"}
-                        marker={{latitude: 10.884950,
-                            longitude: 106.780147,}}
+                        marker={{
+                            latitude: 10.884950,
+                            longitude: 106.780147,
+                        }}
                         key={2}
                         title={"This is a title"}
                         description={"This is a description"}
                         source={require('../assets/images/marker.png')}
                     />
 
+                    <Marker
+                        coordinate={this.state.location}>
+                    </Marker>
                 </MapView>
+
             </View>
         );
     }
+
+
+    componentDidMount()
+    {
+        navigator.geolocation.clearWatch(this.watchID);
+    }
 }
+
+const LAT_DELTA = 0.01;
+const LONG_DELTA = 0.01;
+
