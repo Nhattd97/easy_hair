@@ -16,24 +16,22 @@ import MapView, {Callout, Marker, Polygon} from 'react-native-maps';
 const {width, height} = Dimensions.get('window');
 
 export default class CustomMarker extends Component {
-    constructor(props) {
-        super(props);
-        this.props =
-            {
-                nameOfPlace: "",
-                marker: "",
-                key: 1,
-                title: "",
-                description: "",
-                source: "",
-                rating: "",
-            };
-        this.state = {
-            initialRender: true
-        };
+    static defaultProps = {
+        nameOfPlace: "",
+        coordinateMarker: {
+            latitude: null,
+            longitude: null,
+        },
+        key: 1,
+        title: "",
+        description: "",
+        source: "",
+        rating: 0,
+    };
 
-        this.onLoad = this.onLoad.bind(this);
-    }
+    state = {
+        initialRender: true,
+    };
 
     onLoad() {
         this.setState({initialRender: false});
@@ -50,7 +48,7 @@ export default class CustomMarker extends Component {
                 <Marker key={this.props.key}
                         title={this.props.title}
                         description={this.props.description}
-                        coordinate={this.props.marker}
+                        coordinate={this.props.coordinateMarker}
                         anchor={{x: (40 / width), y: 1}}
                         calloutOffset={{x: -200, y: -200}}>
                     <View style={{
@@ -64,7 +62,7 @@ export default class CustomMarker extends Component {
                             key={`${this.state.initialRender}`}
                             source={require('../assets/images/marker.png')}
                             style={{width: 40, height: 40}}
-                            onLoad={this.onLoad}>
+                            onLoad={this.onLoad.bind(this)}>
                         </Image>
 
 

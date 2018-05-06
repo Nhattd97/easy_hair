@@ -13,23 +13,19 @@ import {Rating} from 'react-native-ratings';
 
 
 export default class BillBoard extends Component {
-    constructor(props) {
-        super(props);
-        this.props =
-            {
-                title: '',
-                source: '',
-                rating: '',
-            };
+    static defaultProps =
+        {
+            title: '',
+            source: '',
+            rating: '',
+        };
 
-        this.state =
+    state =
         {
             viewLength: 200,
             initialRender: true
         };
 
-        this.onLoad = this.onLoad.bind(this);
-    };
 
     componentWillMount()
     {
@@ -53,7 +49,7 @@ export default class BillBoard extends Component {
                 <Image source={this.props.source}
                        style={style.image}
                        key={`${this.state.initialRender}`}
-                       onLoad={this.onLoad}>
+                       onLoad={this.onLoad.bind(this)}>
                 </Image>
 
                 <View style={{flexDirection: 'column'}}>

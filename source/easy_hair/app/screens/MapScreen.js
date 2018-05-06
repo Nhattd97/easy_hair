@@ -6,13 +6,22 @@ import React, {Component} from 'react';
 import {
     View,
     Text,
-    TouchableHighlight
+    TouchableOpacity,
+    Dimensions,
+    StyleSheet
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import CustomMarker from '../controls/CustomMarker.js'
 import MapViewDirections from 'react-native-maps-directions'
 
+
 const GOOGLE_MAP_API_KEY = "AIzaSyDtHoCwRolZ5ND0QOebIfpNFmJLRTG9x6A";
+const {width, height} = Dimensions.get('window');
+
+
+const LAT_DELTA = 0.01;
+const LONG_DELTA = 0.01;
+
 
 export default class MapScreen extends Component<Props> {
 
@@ -165,7 +174,9 @@ export default class MapScreen extends Component<Props> {
                 destination: {
                     latitude: 10.8043691,
                     longitude: 106.7152589,
-                }
+                },
+
+
             }
     }
 
@@ -203,6 +214,7 @@ export default class MapScreen extends Component<Props> {
 
             this.setState({location: location});
         },);
+
     }
 
 
@@ -227,7 +239,7 @@ export default class MapScreen extends Component<Props> {
             markers.push(
                 <CustomMarker
                     nameOfPlace={"Salon " + mar.name}
-                    marker={mar}
+                    coordinateMarker={mar}
                     key={mar.id}
                     title={"This is a title"}
                     description={"This is a description"}
@@ -241,26 +253,18 @@ export default class MapScreen extends Component<Props> {
 
     render() {
         return (
-            <View style={{flex: 1}}>
+            <View
+                style={{width: '100%', height: '100%', justifyContent: 'flex-start'}}>
+
                 <MapView
-                    style={{flex: 1}}
+                    style={{width: width, height: height}}
+                    style={styles.container}
                     initialRegion={this.state.location}
                     // onPress={this.onPress.bind(this)}
                 >
 
                     {this.renderMarkers()}
 
-                    {/*<CustomMarker*/}
-                    {/*nameOfPlace={"Khang is so handsome!"}*/}
-                    {/*marker={{*/}
-                    {/*latitude: 10.884950,*/}
-                    {/*longitude: 106.780147,*/}
-                    {/*}}*/}
-                    {/*key={2}*/}
-                    {/*title={"This is a title"}*/}
-                    {/*description={"This is a description"}*/}
-                    {/*source={require('../assets/images/marker.png')}*/}
-                    {/*/>*/}
 
                     <Marker
                         coordinate={this.state.location}>
@@ -277,6 +281,10 @@ export default class MapScreen extends Component<Props> {
 
                 </MapView>
 
+                {/*<TouchableOpacity*/}
+                    {/*style={{borderRadius: 20, width: 40, height: 40, backgroundColor: 'red', marginTop: -100}}>*/}
+                {/*</TouchableOpacity>*/}
+
 
             </View>
         );
@@ -287,7 +295,4 @@ export default class MapScreen extends Component<Props> {
         navigator.geolocation.clearWatch(this.watchID);
     }
 }
-
-const LAT_DELTA = 0.01;
-const LONG_DELTA = 0.01;
 
