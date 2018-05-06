@@ -6,7 +6,7 @@ import {
   Text,
   View
 } from 'react-native';
-import ProfileScreen from './ProfileScreen.js'
+//import ProfileScreen from './ProfileScreen.js'
 import CardImage from './CardImage.js';
 
 const myUser = {
@@ -22,7 +22,7 @@ export default class Run extends Component {
     return (
       <View style={{ flex: 1 }}>
         {/* <ProfileScreen user={myUser}/>  */}
-        <CardImage style={{ width: 100, height: 250 }} uri={myUser.image} title="Nam" />
+        <CardImage style={{ width: 100, height: 120 }} uri='https://s3.r29static.com//bin/entry/c6b/340x408/1772845/image.png' title="Nam" />
       </View>
     );
   }
