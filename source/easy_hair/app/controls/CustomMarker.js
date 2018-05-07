@@ -10,21 +10,36 @@ import {
     Dimensions,
 } from 'react-native';
 import BillBoard from './BillBoard.js';
+import PropTypes from 'prop-types';
 import MapView, {Callout, Marker, Polygon} from 'react-native-maps';
 
 
 const {width, height} = Dimensions.get('window');
 
 export default class CustomMarker extends Component {
+
+    static propTypes =
+        {
+            nameOfPlace: PropTypes.string,
+            markerId: PropTypes.oneOfType([
+                PropTypes.number,
+                PropTypes.string,
+            ]),
+            title: PropTypes.string,
+            description: PropTypes.string,
+            source: PropTypes.object,
+            rating: PropTypes.number,
+        };
+
+
     static defaultProps = {
-        nameOfPlace: "",
+        nameOfPlace: "Khang",
         coordinateMarker: {
             latitude: null,
             longitude: null,
         },
-        key: 1,
-        title: "",
-        description: "",
+        title: "Title",
+        description: "Description",
         source: "",
         rating: 0,
     };
@@ -45,7 +60,7 @@ export default class CustomMarker extends Component {
                 alignItems: 'center',
                 justifyContent: 'center',
             }}>
-                <Marker key={this.props.key}
+                <Marker key={this.props.markerId}
                         title={this.props.title}
                         description={this.props.description}
                         coordinate={this.props.coordinateMarker}

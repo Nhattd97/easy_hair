@@ -258,7 +258,7 @@ export default class MapScreen extends Component<Props> {
 
                 <MapView
                     style={{width: width, height: height}}
-                    style={styles.container}
+                    //style={styles.container}
                     initialRegion={this.state.location}
                     // onPress={this.onPress.bind(this)}
                 >

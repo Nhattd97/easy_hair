@@ -13,12 +13,15 @@ import {
     Dimensions,
     TouchableOpacity,
 } from "react-native";
-
 import MapView from "react-native-maps";
 import CustomMarker from "../controls/CustomMarker.js";
 import geolib from 'geolib';
 import SlidingUpPanel from "rn-sliding-up-panel";
 
+//region Global variables
+//=====================================================================================
+//                             Global Variables
+//=====================================================================================
 const Images = [
     {uri: "https://i.imgur.com/sNam9iJ.jpg"},
     {uri: "https://i.imgur.com/N7rlQYt.jpg"},
@@ -34,6 +37,8 @@ const CARD_WIDTH = width - 50;
 
 const filterUp = require("../assets/images/filter_up.png");
 const filterDown = require("../assets/images/filter_down.png");
+//endregion
+
 
 export default class AnimatedMap extends Component {
     state = {
@@ -71,7 +76,6 @@ export default class AnimatedMap extends Component {
                 phone: +842838974335,
                 rating: 2,
                 distance: 0,
-
             },
             {
                 coordinate: {
@@ -84,20 +88,6 @@ export default class AnimatedMap extends Component {
                 phone: +84919691978,
                 rating: 3,
                 distance: 0,
-
-            },
-            {
-                coordinate: {
-                    latitude: 10.860831,
-                    longitude: 106.782804,
-                },
-                title: "D&D",
-                description: "40 Đường số 16, Phường Linh Trung, Thu Duc District, Hồ Chí Minh",
-                image: Images[3],
-                phone: +84907500803,
-                rating: 4,
-                distance: 0,
-
             },
             {
                 coordinate: {
@@ -110,7 +100,18 @@ export default class AnimatedMap extends Component {
                 phone: +84868242564,
                 rating: 5,
                 distance: 0,
-
+            },
+            {
+                coordinate: {
+                    latitude: 10.860831,
+                    longitude: 106.782804,
+                },
+                title: "D&D",
+                description: "40 Đường số 16, Phường Linh Trung, Thu Duc District, Hồ Chí Minh",
+                image: Images[3],
+                phone: +84907500803,
+                rating: 4,
+                distance: 0,
             },
         ],
         // endregion
@@ -123,15 +124,56 @@ export default class AnimatedMap extends Component {
             longitudeDelta: 0.01,
         },
 
+        /**
+         * SlidingUpPanel is visible or not
+         * @default: false
+         */
         visible: false,
+
+        /**
+         * tempDistance is a state to assign each salon's distance
+         * @default: -1
+         */
         tempDistance: -1,
+
+        /**
+         * store value of rating that user want to filter salons
+         * @default: 0
+         */
+        ratingFilter: 0,
+
+        /**
+         * filterMode is mode of filter that users choose on filter
+         * @default: "all"
+         * @enum: "all", "number", "rating"
+         */
+        filterMode: "all",
     };
 
+    constructor(props) {
+        super(props);
+        this.getSalonsByRating = this.getSalonsByRating.bind(this);
+        this.getSalonsByNearestSalons = this.getSalonsByNearestSalons.bind(this);
+    }
+
+
+
+    //region  Component Will Mount Function
+    //=====================================================================================
+    //                           Component Will Mount Function
+    //=====================================================================================
     componentWillMount() {
         this.index = 0;
         this.animation = new Animated.Value(0);
     }
+    //endregion
 
+
+
+    //region  Component Did Mount Function
+    //=====================================================================================
+    //                           Component Did Mount Function
+    //=====================================================================================
     componentDidMount() {
         // We should detect when scrolling has stopped then animate
         // We should just debounce the event listener here
@@ -166,8 +208,8 @@ export default class AnimatedMap extends Component {
                                     latitude: this.state.markers[i].coordinate.latitude,
                                     longitude: this.state.markers[i].coordinate.longitude,
                                 });
-                                this.setState({tempDistance: dis});
-                                this.state.markers[i].distance = this.state.tempDistance;
+                                //this.setState({tempDistance: dis});
+                                this.state.markers[i].distance = dis;
                             },
                             () => {
                                 alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
@@ -185,9 +227,14 @@ export default class AnimatedMap extends Component {
         });
 
 
-
     }
+    //endregion
 
+
+    //region  Render Function
+    //=====================================================================================
+    //                           Render Function
+    //=====================================================================================
     render() {
 
         const interpolations = this.state.markers.map((marker, index) => {
@@ -212,9 +259,9 @@ export default class AnimatedMap extends Component {
         let imgFilter = this.state.visible ? filterDown : filterUp;
         let styleFilter = this.state.visible ? styles.filterDown : styles.filterUp;
         let filterText = this.state.visible ? styles.filterTextDown : styles.filterTextUp;
-        let viewPanel = this.state.visible ? styles.viewPanelDown : styles.viewPanelUp;
-
-
+        let viewPanel = this.state.visible ? styles.viewPanelUp : styles.viewPanelDown;
+        let filterButtonChild = this.state.visible ? styles.filterButtonChildUp : styles.filterButtonChildDown;
+        let filterButtonChildText = this.state.visible ? styles.filterButtonChildTextUp : styles.filterButtonChildTextDown;
 
         return (
             <View style={styles.container}>
@@ -238,7 +285,7 @@ export default class AnimatedMap extends Component {
                             <CustomMarker
                                 nameOfPlace={marker.title}
                                 coordinateMarker={marker.coordinate}
-                                key={index}
+                                markerId={index}
                                 title={marker.title}
                                 description={marker.description}
                                 source={marker.image}
@@ -329,9 +376,32 @@ export default class AnimatedMap extends Component {
                     draggableRange={{top: height - 200, bottom: 0}}
                     onRequestClose={() => {
                         this.setState({visible: false})
-                    }}>
+                    }}
+                    allowDragging={false}>
 
                     <View style={viewPanel}>
+                        <TouchableOpacity
+                            style={filterButtonChild}>
+                            <Text style={filterButtonChildText}>
+                                ALL
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={filterButtonChild}>
+                            <Text style={filterButtonChildText}>
+                                NEARLY
+                            </Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={filterButtonChild}
+                        onPress={() => {
+                            this.state.markers.slice(0,this.state.markers.length);
+                            this.setState({markers: this.getSalonsByRating(3)})}
+                        }>
+                            <Text style={filterButtonChildText}>
+                                RATING
+                            </Text>
+                        </TouchableOpacity>
 
                     </View>
 
@@ -359,8 +429,74 @@ export default class AnimatedMap extends Component {
             </View>
         );
     }
+
+    //endregion
+
+    //region Other Functions
+    //=====================================================================================
+    //                                 Other Functions
+    //=====================================================================================
+
+    /**
+     * Set ratingFilter
+     * @param rating
+     */
+    setRatingFilter(rating) {
+        this.setState({ratingFilter: rating});
+    }
+
+    /**
+     * Return an array as a result that is filtered by rating
+     * @param rating
+     * @returns {T[]}
+     */
+    getSalonsByRating(rating) {
+        return this.state.markers.filter((salon) => {
+            return salon.rating >= rating;
+        });
+    }
+
+    /**
+     * Return an array as a result that is filtered by number of nearest salons
+     * @param totalSalons: number of salons in database
+     * @param number: number of salons that user wants to filter
+     * @returns {any[]}
+     */
+    getSalonsByNearestSalons(totalSalons, number) {
+        // sort() method sorts by character, so sort((a,b) => return a - b) will sort number by ascending
+        // this statement means get each salon in markers array, after that ascending sort by distance.
+        let arrAfterSort = this.state.markers.sort((salon) => {
+            return salon.distance;
+        }).sort((a, b) => {
+            return a - b;
+        });
+
+        if (number > totalSalons)
+        {
+            let result = new Array(arrAfterSort.length);
+            for (let i = 0; i <=  arrAfterSort.length - 1; ++i) {
+                result.push(arrAfterSort[arrAfterSort.length - 1 - i]);
+            }
+            return result;
+        }
+
+        else {
+            let result = new Array(number);
+            for (let i = 0; i <= number - 1; ++i) {
+                result.push(arrAfterSort[arrAfterSort.length - 1 - i]);
+            }
+            return result;
+        }
+    }
+
+    //endregion
 }
 
+
+//region StyleSheet
+//=====================================================================================
+//                                   StyleSheet
+//=====================================================================================
 const styles = StyleSheet.create({
     container:
         {
@@ -484,14 +620,18 @@ const styles = StyleSheet.create({
         },
     viewPanelDown:
         {
+            flex: 1,
             height: height,
-            backgroundColor: "black",
+            backgroundColor: "#fad390",
+            alignItems: "center",
             opacity: 0.5
         },
     viewPanelUp:
         {
+            flex: 1,
             height: height,
-            backgroundColor: "#fad390",
+            alignItems: "center",
+            backgroundColor: "black",
             opacity: 0.5
         },
     touchableCover:
@@ -503,6 +643,45 @@ const styles = StyleSheet.create({
             left: 0,
             right: 0,
             paddingVertical: 0,
-        }
+        },
+    filterButtonChildUp:
+        {
+            borderWidth: 3,
+            borderRadius: 20,
+            borderColor: "#fad390",
+            width: width / 2,
+            height: height / 7,
+            marginVertical: 15,
+            alignItems: "center",
+            justifyContent: "space-around"
+        },
+    filterButtonChildDown:
+        {
+            borderWidth: 3,
+            borderRadius: 20,
+            borderColor: "black",
+            width: width / 2,
+            height: height / 7,
+            marginVertical: 15,
+            alignItems: "center",
+            justifyContent: "space-around"
+        },
+    filterButtonChildTextUp:
+        {
+            color: "#fad390",
+            fontSize: 30,
+            fontFamily: "TitanOne-Regular",
+        },
+    filterButtonChildTextDown:
+        {
+            color: "black",
+            fontSize: 30,
+            fontFamily: "TitanOne-Regular",
+        },
+    starRating:
+        {
+            opacity: 0,
+        },
 
 });
+//endregion
