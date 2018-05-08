@@ -6,23 +6,40 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import firebase from 'react-native-firebase'
 
 export default class AuthLoadingScreen extends Component {
   constructor(props) {
     super(props);
     this._bootstrapAsync();
+    this.state = {
+      isLoggedIn : false,
+      user : null
+    }
   }
 
-  // Fetch the token from storage then navigate to our appropriate place
+  componentDidMount() {
+      this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+        this.setState({
+          user
+        });
+
+      });
+    }
+
+    
+  componentWillUnmount() {
+    this.authSubscription()
+  }
+  
+
+
   _bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem('isLoggedIn');
 
-    // This will switch to the App screen or Auth screen and this loading
-    // screen will be unmounted and thrown away.
-    this.props.navigation.navigate(userToken ? 'App' : 'Auth');
+    this.props.navigation.navigate(this.state.user ? 'App' : 'Auth');
   };
 
-  // Render any loading content that you like here
   render() {
     return (
       <View style={styles.container}>

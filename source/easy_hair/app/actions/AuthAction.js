@@ -3,8 +3,8 @@ import * as AuthLogics from '../logics/AuthLogics'
 
 export function login(userInfo, successFunc = null, errorFunc = null) {
     return dispatch => {
-        AuthLogics.login(userInfo, () => {
-            dispatch({ type : ActionTypes.LOGIN, userInfo})
+        AuthLogics.login(userInfo, (user) => {
+            dispatch({ type : ActionTypes.LOGIN, user})
             if(successFunc)
                 successFunc()
         }, (error) => {
@@ -16,7 +16,8 @@ export function login(userInfo, successFunc = null, errorFunc = null) {
 
 export function sendCode(phone, successFunc = null , errorFunc = null) {
     return dispatch => {
-        AuthLogics.sendCode(phone, (confirmResult) => {
+        formatPhone = `+84${phone}`
+        AuthLogics.sendCode(formatPhone, (confirmResult) => {
             const content = {
                 phone,
                 confirmResult

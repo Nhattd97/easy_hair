@@ -55,15 +55,22 @@ class ForgotPasswordScreen extends Component {
     }
 
     recoveryCodePress() {
-        //formatPhoneNumber = `+84${this.state.phone.text}`
-        this.props.AuthActions.sendCode(this.state.phone.text,() => {
+        const phone = this.state.phone.text
+        var formatPhone = phone
+        if(phone.charAt(0) == '0') {
+            if(phone.length == 10)
+                formatPhone = `${phone.substr(1,9)}`
+            if(phone.length == 11)
+                formatPhone = `${phone.substr(1,10)}`
+        }
+        this.props.AuthActions.sendCode(formatPhone,() => {
             this.props.navigation.navigate('RecoveryCode')
         }, (error) => {
             alert(error)
         })
     }
     render() {
-        if (this.state.phone.text === '' || this.state.phone.error) this.state.active = false
+        if (this.state.phone.text === '') this.state.active = false
         else this.state.active = true
         return (
             <ScrollView style={styles.container}>
@@ -92,8 +99,8 @@ class ForgotPasswordScreen extends Component {
                     />
                     <View style={styles.proceedBtnWrap}>
 
-                        <TouchableOpacity style={[styles.proceedBtn, this.state.active == false && styles.proceedBtnOn]} onPress={() => this.recoveryCodePress()}>
-                            <Text style={[styles.proceedBtnTitle, this.state.active == false && styles.proceedBtnTitleOn]}>Tiếp theo</Text>
+                        <TouchableOpacity style={[styles.proceedBtn, this.state.active == true && styles.proceedBtnOn]} onPress={() => this.recoveryCodePress()}>
+                            <Text style={[styles.proceedBtnTitle, this.state.active == true && styles.proceedBtnTitleOn]}>Tiếp theo</Text>
 
                         </TouchableOpacity>
                     </View>

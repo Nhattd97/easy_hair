@@ -15,8 +15,10 @@ import {
 
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import moment from 'moment';
+import { FONT } from '../../const';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import firebase from 'react-native-firebase'
 
 // Import actions
 import * as AuthActions from '../../actions/AuthAction'
@@ -24,24 +26,19 @@ import * as AuthActions from '../../actions/AuthAction'
 class InfoScreen extends Component {
 
     static navigationOptions = {
-        title: 'ĐĂNG KÝ',
-        headerStyle: {
-            backgroundColor: '#2D9CDB',
-            height: 55,
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-            fontFamily: 'Robeto-Medium',
-            paddingLeft: 85,
-            fontWeight: '100'
-        },
-        titleStyle: {
-            textAlign: 'center',
-        },
-    };
+        header: (props) => (
+            <View style={styles.header}>
+                <View>
+                    <Text style={styles.headerTitle}>{'ĐĂNG KÝ'}</Text>
+                </View>
+            </View>
+        ),
+        tabBarVisible: true
+    }
 
     constructor(props) {
         super(props);
+        this.database = firebase.database()
         //dataGender = ['Male', 'Female', 'Other'];
         this.state = {
             selected: "Male",
@@ -50,7 +47,18 @@ class InfoScreen extends Component {
             password: '',
             passwordConfirm: '',
             name: '',
+            birthday : '18/07/1997',
+            address : 'Binh duong'
         }
+    }
+
+    writeUserInfo = (userId) => {
+        this.database.ref(`users/${userId}`).set({
+            name : this.state.name,
+            gender : this.state.selected,
+            birthday : this.state.birthday,
+            address : this.state.address
+        })
     }
 
     // renderGenderItem() {
@@ -76,7 +84,7 @@ class InfoScreen extends Component {
         this.setState({ isDateTimePickerVisible: true, })
     }
 
-    continueChecker = () => {
+    continueChecker = (userId) => {
         // return this.state.password == this.state.passwordConfirm ? true: false
 
         if (this.state.password != this.state.passwordConfirm) {
@@ -89,23 +97,22 @@ class InfoScreen extends Component {
             alert("Your password least 6 letters.");
         }
         else {
-            alert("To be continued...");
-        }
-        this.props.user.updateEmail(`${this.props.phone}@domain.com`)
-        .then(() => {
-            alert('changed mail!')
-            this.props.user.updatePassword('123456')
+            this.writeUserInfo(userId)
+            this.props.user.updateEmail(`${this.props.phone}@domain.com`)
             .then(() => {
-                alert('changed password!')
-                this.props.navigation.navigate("Confirm")
-            })
+                this.props.user.updatePassword(this.state.password)
+                .then(() => {
+                    this.props.navigation.navigate("Confirm")
+                })
+                .catch( error => {
+                    alert(error)
+                } )
+                })
             .catch( error => {
                 alert(error)
             } )
-            })
-        .catch( error => {
-            alert(error)
-        } )
+        }
+        
         
     }
 
@@ -217,7 +224,7 @@ class InfoScreen extends Component {
 
                         <View style={styles.sGroupButtonContinue}>
                             <TouchableOpacity style={styles.sButtonContinue}
-                                onPress={this.continueChecker}>
+                                onPress={()=> {this.continueChecker(this.props.user.uid)}}>
                                 <Text style={styles.sTextButtonContinue}>
                                     Tiếp theo
                                 </Text>
@@ -359,6 +366,21 @@ const styles = StyleSheet.create({
         height: 35,
         paddingTop: 7,
         paddingLeft: 12,
-    }
+    },
+    header: {
+        paddingTop: 18,
+        paddingBottom: 10,
+        position: 'relative',
+        height: 63,
+        backgroundColor: '#2D9CDB'
+    },
+    headerTitle: {
+        color: '#FFFFFF',
+        fontFamily: FONT.APP,
+        fontSize: 18,
+        textAlign: 'center',
+        paddingTop: 5,
+        fontWeight: 'bold'
+    },
 
 });

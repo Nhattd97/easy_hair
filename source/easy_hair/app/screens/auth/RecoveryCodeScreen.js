@@ -53,6 +53,11 @@ class RecoveryCodeScreen extends Component {
     }
 
     resendPress() {
+        this.props.AuthActions.sendCode(this.props.phone,() => {
+            alert('sent!')
+        }, (error) => {
+            alert(error)
+        })
     }
 
     donePress() {
@@ -115,7 +120,8 @@ class RecoveryCodeScreen extends Component {
 }
 function mapStateToProps(state) {
     return {
-        confirmResult : state.Auth.confirmResult
+        confirmResult : state.Auth.confirmResult,
+        phone : state.Auth.phone
     };
 }
 function mapDispatchToProps(dispatch) {

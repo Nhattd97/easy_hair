@@ -14,7 +14,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 isLoggedIn : true,
-                text : action.password
+                user : action.user
             }
         case ActionTypes.SEND_CODE :
             return {

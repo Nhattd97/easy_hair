@@ -4,7 +4,7 @@ export function login(userInfo, successFunc = null, errorFunc = null) {
     AuthAPIs.login(userInfo)
     .then(user => {
         if(successFunc)
-            successFunc()
+            successFunc(user)
     })
     .catch(error => {
         if(errorFunc)   

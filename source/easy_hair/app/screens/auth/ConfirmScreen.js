@@ -9,27 +9,20 @@ import {
     Alert
 } from 'react-native';
 import firebase from 'react-native-firebase'
+import { FONT } from '../../const';
 
 export default class ConfirmScreen extends Component {
 
     static navigationOptions = {
-        title: 'QUÊN MẬT KHẨU',
-        headerStyle: {
-          backgroundColor: '#2D9CDB',
-          height: 55,
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontFamily: 'Robeto-Medium',
-          fontWeight: '100',
-          paddingLeft: 60,
-          fontSize: 18,
-          lineHeight: 21,
-        },
-        titleStyle: {
-            textAlign: 'center',
-          },
-      };
+        header: (props) => (
+            <View style={styles.header}>
+                <View>
+                    <Text style={styles.headerTitle}>{'QUÊN MẬT KHẨU'}</Text>
+                </View>
+            </View>
+        ),
+        tabBarVisible: true
+    };
 
 
   render() {
@@ -68,7 +61,7 @@ export default class ConfirmScreen extends Component {
   backToLoginScreen = () =>
   {
     firebase.auth().signOut()
-    this.props.navigation.navigate("Login")
+    this.props.navigation.navigate("SignIn")
   }
 }
 
@@ -114,5 +107,20 @@ var styles = StyleSheet.create({
         lineHeight: 20,
         fontSize: 17,
         color: '#ffffff', 
-    }
+    },
+    header: {
+        paddingTop: 18,
+        paddingBottom: 10,
+        position: 'relative',
+        height: 63,
+        backgroundColor: '#1572B8'
+    },
+    headerTitle: {
+        color: '#FFFFFF',
+        fontFamily: FONT.APP,
+        fontSize: 15,
+        textAlign: 'center',
+        paddingTop: 5,
+        fontWeight: 'bold'
+    },
 });

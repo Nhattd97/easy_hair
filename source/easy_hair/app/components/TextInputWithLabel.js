@@ -91,7 +91,7 @@ class TextInputWithLabel extends Component {
                         secureTextEntry = {this.props.secureTextEntry}
                     />
                 </View>
-                {errorView}
+                {/* {errorView} */}
             </View>
         );
     }
