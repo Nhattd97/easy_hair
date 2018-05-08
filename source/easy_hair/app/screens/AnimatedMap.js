@@ -7,7 +7,6 @@ import {
     StyleSheet,
     Text,
     View,
-    ScrollView,
     Animated,
     Image,
     Dimensions,
@@ -17,6 +16,8 @@ import MapView from "react-native-maps";
 import CustomMarker from "../controls/CustomMarker.js";
 import geolib from 'geolib';
 import SlidingUpPanel from "rn-sliding-up-panel";
+import PopupDialog from 'react-native-popup-dialog';
+import StarRating from 'react-native-star-rating';
 
 //region Global variables
 //=====================================================================================
@@ -37,6 +38,10 @@ const CARD_WIDTH = width - 50;
 
 const filterUp = require("../assets/images/filter_up.png");
 const filterDown = require("../assets/images/filter_down.png");
+
+let SCALE_STYLE;
+let OPACITY_STYLE;
+
 //endregion
 
 
@@ -52,19 +57,7 @@ export default class AnimatedMap extends Component {
         //      @ description:  describe about the salon, I passed the salon's address
         //      @ image:        an object represents an uri
         //      @ rating:       score of the salon
-        markers: [
-            {
-                coordinate: {
-                    latitude: 10.876492,
-                    longitude: 106.808571,
-                },
-                title: "Nam Bảo Lân",
-                description: "Đường 621, Phường Linh Trung, Quận Thủ Đức, Thành Phố Hồ Chí Minh",
-                image: Images[0],
-                phone: +841633829689,
-                rating: 1,
-                distance: 0,
-            },
+        salonsInDatabase: [
             {
                 coordinate: {
                     latitude: 10.887485,
@@ -75,6 +68,18 @@ export default class AnimatedMap extends Component {
                 image: Images[1],
                 phone: +842838974335,
                 rating: 2,
+                distance: 0,
+            },
+            {
+                coordinate: {
+                    latitude: 10.876492,
+                    longitude: 106.808571,
+                },
+                title: "Nam Bảo Lân",
+                description: "Đường 621, Phường Linh Trung, Quận Thủ Đức, Thành Phố Hồ Chí Minh",
+                image: Images[0],
+                phone: +841633829689,
+                rating: 1,
                 distance: 0,
             },
             {
@@ -91,18 +96,6 @@ export default class AnimatedMap extends Component {
             },
             {
                 coordinate: {
-                    latitude: 10.8834292,
-                    longitude: 106.7783064,
-                },
-                title: "Khang",
-                description: "B Dorm, DiAn District, BinhDuong Province",
-                image: Images[4],
-                phone: +84868242564,
-                rating: 5,
-                distance: 0,
-            },
-            {
-                coordinate: {
                     latitude: 10.860831,
                     longitude: 106.782804,
                 },
@@ -113,8 +106,22 @@ export default class AnimatedMap extends Component {
                 rating: 4,
                 distance: 0,
             },
+            {
+                coordinate: {
+                    latitude: 10.8834292,
+                    longitude: 106.7783064,
+                },
+                title: "Khang",
+                description: "B Dorm, DiAn District, BinhDuong Province",
+                image: Images[4],
+                phone: +84868242564,
+                rating: 5,
+                distance: 0,
+            },
         ],
         // endregion
+
+        markers: [],
 
         // The region that The Map will be shown at the first time
         region: {
@@ -148,14 +155,9 @@ export default class AnimatedMap extends Component {
          * @enum: "all", "number", "rating"
          */
         filterMode: "all",
+
+        dialogVisible: false
     };
-
-    constructor(props) {
-        super(props);
-        this.getSalonsByRating = this.getSalonsByRating.bind(this);
-        this.getSalonsByNearestSalons = this.getSalonsByNearestSalons.bind(this);
-    }
-
 
 
     //region  Component Will Mount Function
@@ -165,9 +167,10 @@ export default class AnimatedMap extends Component {
     componentWillMount() {
         this.index = 0;
         this.animation = new Animated.Value(0);
+        this.setState({markers: this.state.salonsInDatabase});
     }
-    //endregion
 
+    //endregion
 
 
     //region  Component Did Mount Function
@@ -178,7 +181,7 @@ export default class AnimatedMap extends Component {
         // We should detect when scrolling has stopped then animate
         // We should just debounce the event listener here
         this.animation.addListener(({value}) => {
-            let index = Math.floor(value / CARD_WIDTH + 0.3); // animate 30% away from landing on the next item
+            let index = Math.floor(value / CARD_WIDTH + 0.4); // animate 30% away from landing on the next item
             if (index >= this.state.markers.length) {
                 index = this.state.markers.length - 1;
             }
@@ -201,33 +204,38 @@ export default class AnimatedMap extends Component {
                         );
                     }
 
-                    for (let i = 0; i <= this.state.markers.length - 1; ++i) {
-                        navigator.geolocation.getCurrentPosition(
-                            (position) => {
-                                let dis = geolib.getDistance(position.coords, {
-                                    latitude: this.state.markers[i].coordinate.latitude,
-                                    longitude: this.state.markers[i].coordinate.longitude,
-                                });
-                                //this.setState({tempDistance: dis});
-                                this.state.markers[i].distance = dis;
-                            },
-                            () => {
-                                alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
-                                this.setState({tempDistance: -1});
-                                this.state.markers[i].distance = this.state.tempDistance;
-                            },
-                            {
-                                enableHighAccuracy: false, timeout: 20000
-                            }
-                        );
-                    }
                 },
                 10 // number of delay time that the function call should be delayed by
             );
         });
 
+        clearTimeout(this.distanceTimeOut);
+        this.distanceTimeOut = setTimeout(() => {
+                for (let i = 0; i <= this.state.markers.length - 1; ++i) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            let dis = geolib.getDistance(position.coords, {
+                                latitude: this.state.markers[i].coordinate.latitude,
+                                longitude: this.state.markers[i].coordinate.longitude,
+                            });
+                            //this.setState({tempDistance: dis});
+                            this.state.markers[i].distance = dis;
+                        },
+                        () => {
+                            alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
+                            this.setState({tempDistance: -1});
+                            this.state.markers[i].distance = this.state.tempDistance;
+                        },
+                        {
+                            enableHighAccuracy: false, timeout: 20000
+                        }
+                    );
+                }
+            },
+            1000);
 
     }
+
     //endregion
 
 
@@ -263,6 +271,7 @@ export default class AnimatedMap extends Component {
         let filterButtonChild = this.state.visible ? styles.filterButtonChildUp : styles.filterButtonChildDown;
         let filterButtonChildText = this.state.visible ? styles.filterButtonChildTextUp : styles.filterButtonChildTextDown;
 
+
         return (
             <View style={styles.container}>
                 <MapView
@@ -281,6 +290,8 @@ export default class AnimatedMap extends Component {
                         const opacityStyle = {
                             opacity: interpolations[index].opacity,
                         };
+                        SCALE_STYLE = scaleStyle;
+                        OPACITY_STYLE = opacityStyle;
                         return (
                             <CustomMarker
                                 nameOfPlace={marker.title}
@@ -295,8 +306,7 @@ export default class AnimatedMap extends Component {
                                     <Animated.View style={[styles.ring, scaleStyle]}/>
                                     <View style={styles.coordinateMarker}/>
                                 </Animated.View>
-                            </CustomMarker>
-                        );
+                            </CustomMarker>);
                     })}
 
                 </MapView>
@@ -375,33 +385,65 @@ export default class AnimatedMap extends Component {
                     height={height - 200}
                     draggableRange={{top: height - 200, bottom: 0}}
                     onRequestClose={() => {
-                        this.setState({visible: false})
+                        this.setState({visible: false, dialogVisible: false})
                     }}
                     allowDragging={false}>
 
                     <View style={viewPanel}>
                         <TouchableOpacity
-                            style={filterButtonChild}>
+                            style={filterButtonChild}
+                            onPress={() => {
+                                this.getAllSalons();
+                            }}>
                             <Text style={filterButtonChildText}>
                                 ALL
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={filterButtonChild}>
+                        <TouchableOpacity
+                            style={filterButtonChild}>
                             <Text style={filterButtonChildText}>
                                 NEARLY
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={filterButtonChild}
-                        onPress={() => {
-                            this.state.markers.slice(0,this.state.markers.length);
-                            this.setState({markers: this.getSalonsByRating(3)})}
-                        }>
+
+                        <TouchableOpacity
+                            style={[filterButtonChild,]}
+                            onPress={() => {
+                                this.setState({dialogVisible: true})
+                            }
+                            }>
                             <Text style={filterButtonChildText}>
                                 RATING
                             </Text>
                         </TouchableOpacity>
+
+                        <PopupDialog
+                            style={{backgroundColor: "red"}}
+                            width={width}
+                            height={100}
+                            dialogStyle={{backgroundColor: "black"}}
+                            show={this.state.dialogVisible}
+                            onDismissed={() => {
+                                this.onPopUpDismissed();
+                            }}>
+
+                            <StarRating
+                                starStyle={{marginTop: 15, justifyContent: "center", alignItems: "center"}}
+                                starSize={60}
+                                disabled={false}
+                                emptyStar={require('../assets/images/empty-star.png')}
+                                fullStar={require('../assets/images/full-star.png')}
+                                maxStars={5}
+                                rating={this.state.ratingFilter}
+                                selectedStar={(rating) => {
+                                    this.setState({ratingFilter: rating});
+                                }}
+                            />
+
+                        </PopupDialog>
+
 
                     </View>
 
@@ -438,21 +480,15 @@ export default class AnimatedMap extends Component {
     //=====================================================================================
 
     /**
-     * Set ratingFilter
-     * @param rating
-     */
-    setRatingFilter(rating) {
-        this.setState({ratingFilter: rating});
-    }
-
-    /**
      * Return an array as a result that is filtered by rating
      * @param rating
      * @returns {T[]}
      */
     getSalonsByRating(rating) {
-        return this.state.markers.filter((salon) => {
-            return salon.rating >= rating;
+        this.setState({
+            markers: this.state.salonsInDatabase.filter((salon) => {
+                return salon.rating >= rating;
+            })
         });
     }
 
@@ -460,33 +496,46 @@ export default class AnimatedMap extends Component {
      * Return an array as a result that is filtered by number of nearest salons
      * @param totalSalons: number of salons in database
      * @param number: number of salons that user wants to filter
-     * @returns {any[]}
      */
     getSalonsByNearestSalons(totalSalons, number) {
         // sort() method sorts by character, so sort((a,b) => return a - b) will sort number by ascending
         // this statement means get each salon in markers array, after that ascending sort by distance.
-        let arrAfterSort = this.state.markers.sort((salon) => {
-            return salon.distance;
-        }).sort((a, b) => {
-            return a - b;
+
+        let arrAfterSort = this.state.salonsInDatabase.sort((salon, salon1) => {
+            return salon.distance - salon1.distance;
         });
 
-        if (number > totalSalons)
-        {
-            let result = new Array(arrAfterSort.length);
-            for (let i = 0; i <=  arrAfterSort.length - 1; ++i) {
-                result.push(arrAfterSort[arrAfterSort.length - 1 - i]);
+        if (number > totalSalons) {
+            let result = [];
+            for (let i = 0; i <= arrAfterSort.length - 1; ++i) {
+                result.push(arrAfterSort[i]);
             }
-            return result;
+            this.setState({markers: result});
         }
 
         else {
-            let result = new Array(number);
+            let result = [];
             for (let i = 0; i <= number - 1; ++i) {
-                result.push(arrAfterSort[arrAfterSort.length - 1 - i]);
+                result.push(arrAfterSort[i]);
             }
-            return result;
+            this.setState({markers: result});
         }
+    }
+
+    /**
+     * get All salons
+     */
+    getAllSalons() {
+        this.setState({markers: this.state.salonsInDatabase});
+    }
+
+
+    /**
+     * An event when Pop Up on dismissed
+     */
+    onPopUpDismissed() {
+        this.setState({dialogVisible: false});
+        this.getSalonsByRating(this.state.ratingFilter);
     }
 
     //endregion
