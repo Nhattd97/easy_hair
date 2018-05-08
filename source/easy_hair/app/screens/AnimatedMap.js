@@ -161,14 +161,22 @@ export default class AnimatedMap extends Component {
         /**
          * set Pop Up dialog is show or hide
          */
-        dialogVisible: false,
+        isShowPopUpDialog: false,
 
         /**
          * number of nearest salons
          */
         numberNearSalons: 0,
 
+        /**
+         * item list for WheelPicker
+         */
         itemList: [],
+
+        /**
+         * set WheelPicker show or hide
+         */
+        isShowPicker: false,
     };
 
 
@@ -403,7 +411,7 @@ export default class AnimatedMap extends Component {
                     height={height - 200}
                     draggableRange={{top: height - 200, bottom: 0}}
                     onRequestClose={() => {
-                        this.setState({visible: false, dialogVisible: false})
+                        this.setState({visible: false, isShowPopUpDialog: false})
                     }}
                     allowDragging={false}>
 
@@ -418,65 +426,80 @@ export default class AnimatedMap extends Component {
                             </Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={filterButtonChild}
-                            onPress={() => {
-                                this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons)
-                            }}>
-                            <Text style={filterButtonChildText}>
-                                NEARLY
-                            </Text>
-                        </TouchableOpacity>
+                        {
+                            this.state.isShowPicker === false ?
+                                (
+                                    <TouchableOpacity
+                                        style={filterButtonChild}
+                                        onPress={() => {
+                                            this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons)
+                                            this.setState({isShowPicker: true})
+                                        }}>
+                                        <Text style={filterButtonChildText}>
+                                            NEARLY
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                                :
+                                (
+                                    <Picker
+                                        style={styles.wheelPicker}
+                                        selectedValue={this.state.numberNearSalons}
+                                        itemStyle={{color: "white", fontSize: 26}}
+                                        onValueChange={(index) => {
+                                            this.setState({
+                                                numberNearSalons: index,
+                                            })
+                                        }}>
+                                        {this.state.itemList.map((value, i) => (
+                                            <Picker.Item label={value} value={i} key={value}/>
+                                        ))}
+                                    </Picker>
+                                )
+                        }
 
-                        <Picker
-                            style={{width: 150, height: 180}}
-                            selectedValue={this.state.numberNearSalons}
-                            itemStyle={{color: "white", fontSize: 26}}
-                            onValueChange={(index) => {
-                                this.setState({
-                                    numberNearSalons: index,
-                                })
-                            }}>
-                            {this.state.itemList.map((value, i) => (
-                                <Picker.Item label={value} value={i} key={"money" + value}/>
-                            ))}
-                        </Picker>
+                        {
+                            this.state.isShowPopUpDialog === false ?
+                                (
+                                    <TouchableOpacity
+                                        style={[filterButtonChild,]}
+                                        onPress={() => {
+                                            this.setState({isShowPopUpDialog: true, isShowPicker: false})
+                                        }
+                                        }>
+                                        <Text style={filterButtonChildText}>
+                                            RATING
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                                :
+                                (
+                                    < PopupDialog
+                                        style={{backgroundColor: "red"}}
+                                        width={width}
+                                        height={100}
+                                        dialogStyle={{backgroundColor: "black"}}
+                                        show={this.state.isShowPopUpDialog}
+                                        onDismissed={() => {
+                                            this.onPopUpDismissed();
+                                        }}>
 
-                        <TouchableOpacity
-                            style={[filterButtonChild,]}
-                            onPress={() => {
-                                this.setState({dialogVisible: true})
-                            }
-                            }>
-                            <Text style={filterButtonChildText}>
-                                RATING
-                            </Text>
-                        </TouchableOpacity>
+                                        <StarRating
+                                            starStyle={{marginTop: 15, justifyContent: "center", alignItems: "center"}}
+                                            starSize={60}
+                                            disabled={false}
+                                            emptyStar={require('../assets/images/empty-star.png')}
+                                            fullStar={require('../assets/images/full-star.png')}
+                                            maxStars={5}
+                                            rating={this.state.ratingFilter}
+                                            selectedStar={(rating) => {
+                                                this.setState({ratingFilter: rating});
+                                            }}
+                                        />
 
-                        <PopupDialog
-                            style={{backgroundColor: "red"}}
-                            width={width}
-                            height={100}
-                            dialogStyle={{backgroundColor: "black"}}
-                            show={this.state.dialogVisible}
-                            onDismissed={() => {
-                                this.onPopUpDismissed();
-                            }}>
-
-                            <StarRating
-                                starStyle={{marginTop: 15, justifyContent: "center", alignItems: "center"}}
-                                starSize={60}
-                                disabled={false}
-                                emptyStar={require('../assets/images/empty-star.png')}
-                                fullStar={require('../assets/images/full-star.png')}
-                                maxStars={5}
-                                rating={this.state.ratingFilter}
-                                selectedStar={(rating) => {
-                                    this.setState({ratingFilter: rating});
-                                }}
-                            />
-
-                        </PopupDialog>
+                                    </PopupDialog>
+                                )
+                        }
 
 
                     </View>
@@ -568,7 +591,7 @@ export default class AnimatedMap extends Component {
      * An event when Pop Up on dismissed
      */
     onPopUpDismissed() {
-        this.setState({dialogVisible: false});
+        this.setState({isShowPopUpDialog: false});
         this.getSalonsByRating(this.state.ratingFilter);
     }
 
@@ -764,6 +787,11 @@ const styles = StyleSheet.create({
     starRating:
         {
             opacity: 0,
+        },
+    wheelPicker:
+        {
+            width: 150,
+            height: height / 7 + 30,
         },
 
 });
