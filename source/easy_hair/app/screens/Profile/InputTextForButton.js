@@ -15,20 +15,28 @@ class InputTextforButton extends Component {
         const { style, text, color, side = "right" } = this.props;
 
         return (
+            <TouchableOpacity
+                onPress={this.onButtonPress}>
             <View style={[styles.container, style]}>
+            
                 <View style={styles.body}>
+               
                     {
                         (side === "left") ? <View style={[styles.line, { backgroundColor: color }]}></View> : null
                     }
-                    <TouchableOpacity
-                        onPress={this.onButtonPress}>
+                
+                   
                         <Text style={[styles.textname, { color: color }]}> {text}</Text>
-                    </TouchableOpacity>
+                   
+                   
                     {
                         (side === "right") ? <View style={[styles.line, { backgroundColor: color }]}></View> : null
                     }
+                   
                 </View>
+               
             </View>
+            </TouchableOpacity>
 
         )
     }
