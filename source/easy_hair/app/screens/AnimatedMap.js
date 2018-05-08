@@ -411,7 +411,7 @@ export default class AnimatedMap extends Component {
                     height={height - 200}
                     draggableRange={{top: height - 200, bottom: 0}}
                     onRequestClose={() => {
-                        this.setState({visible: false, isShowPopUpDialog: false})
+                        this.setState({visible: false, isShowPopUpDialog: false, isShowPicker: false,})
                     }}
                     allowDragging={false}>
 
@@ -432,8 +432,7 @@ export default class AnimatedMap extends Component {
                                     <TouchableOpacity
                                         style={filterButtonChild}
                                         onPress={() => {
-                                            this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons)
-                                            this.setState({isShowPicker: true})
+                                            this.setState({isShowPicker: true});
                                         }}>
                                         <Text style={filterButtonChildText}>
                                             NEARLY
@@ -442,19 +441,34 @@ export default class AnimatedMap extends Component {
                                 )
                                 :
                                 (
-                                    <Picker
-                                        style={styles.wheelPicker}
-                                        selectedValue={this.state.numberNearSalons}
-                                        itemStyle={{color: "white", fontSize: 26}}
-                                        onValueChange={(index) => {
-                                            this.setState({
-                                                numberNearSalons: index,
-                                            })
-                                        }}>
-                                        {this.state.itemList.map((value, i) => (
-                                            <Picker.Item label={value} value={i} key={value}/>
-                                        ))}
-                                    </Picker>
+                                    <View
+                                        style={styles.viewCoverWheelPicker}>
+                                        <Picker
+                                            style={styles.wheelPicker}
+                                            selectedValue={this.state.numberNearSalons}
+                                            itemStyle={{color: "white", fontSize: 26}}
+                                            onValueChange={(index) => {
+                                                this.setState({numberNearSalons: index,});
+                                            }}
+                                        >
+                                            {this.state.itemList.map((value, i) =>
+                                                (
+                                                    <Picker.Item label={value} value={i} key={value}/>
+                                                )
+                                            )}
+                                        </Picker>
+
+                                        <TouchableOpacity
+                                            style={[filterButtonChild, {width: 70, height: 50}]}
+                                            onPress={() => {
+                                                this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons);
+                                                this.setState({isShowPicker: false});
+                                            }}>
+                                            <Text style={[filterButtonChildText, {fontSize: 20}]}>
+                                                OK
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 )
                         }
 
@@ -793,6 +807,15 @@ const styles = StyleSheet.create({
             width: 150,
             height: height / 7 + 30,
         },
+    viewCoverWheelPicker:
+        {
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: "center",
+            alignItems: "center",
+            width: width,
+            height: height / 7 + 30,
+        }
 
 });
 //endregion
