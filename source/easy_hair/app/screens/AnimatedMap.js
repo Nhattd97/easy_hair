@@ -11,6 +11,7 @@ import {
     Image,
     Dimensions,
     TouchableOpacity,
+    TextInput
 } from "react-native";
 import MapView from "react-native-maps";
 import CustomMarker from "../controls/CustomMarker.js";
@@ -18,6 +19,7 @@ import geolib from 'geolib';
 import SlidingUpPanel from "rn-sliding-up-panel";
 import PopupDialog from 'react-native-popup-dialog';
 import StarRating from 'react-native-star-rating';
+import Picker from 'react-native-wheel-picker';
 
 //region Global variables
 //=====================================================================================
@@ -156,7 +158,17 @@ export default class AnimatedMap extends Component {
          */
         filterMode: "all",
 
-        dialogVisible: false
+        /**
+         * set Pop Up dialog is show or hide
+         */
+        dialogVisible: false,
+
+        /**
+         * number of nearest salons
+         */
+        numberNearSalons: 0,
+
+        itemList: [],
     };
 
 
@@ -168,6 +180,12 @@ export default class AnimatedMap extends Component {
         this.index = 0;
         this.animation = new Animated.Value(0);
         this.setState({markers: this.state.salonsInDatabase});
+
+        let temp = [];
+        for (let i = 0; i <= this.state.salonsInDatabase.length; ++i) {
+            temp.push(i.toString());
+        }
+        this.setState({itemList: temp});
     }
 
     //endregion
@@ -401,12 +419,28 @@ export default class AnimatedMap extends Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={filterButtonChild}>
+                            style={filterButtonChild}
+                            onPress={() => {
+                                this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons)
+                            }}>
                             <Text style={filterButtonChildText}>
                                 NEARLY
                             </Text>
                         </TouchableOpacity>
 
+                        <Picker
+                            style={{width: 150, height: 180}}
+                            selectedValue={this.state.numberNearSalons}
+                            itemStyle={{color: "white", fontSize: 26}}
+                            onValueChange={(index) => {
+                                this.setState({
+                                    numberNearSalons: index,
+                                })
+                            }}>
+                            {this.state.itemList.map((value, i) => (
+                                <Picker.Item label={value} value={i} key={"money" + value}/>
+                            ))}
+                        </Picker>
 
                         <TouchableOpacity
                             style={[filterButtonChild,]}
