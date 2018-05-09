@@ -13,8 +13,9 @@ import {
     Platform,
     ImageBackground
 } from 'react-native'
+import firebase from 'react-native-firebase'
 import Carousel, {Pagination} from 'react-native-snap-carousel'
-import {SliderEntry} from '../../components'
+import {SliderEntry, TextButton} from '../../components'
 
 const IS_IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -91,28 +92,48 @@ export default class AlbumScreen extends Component {
         super(props)
         this.state = {
             image : 'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F1.jpg?alt=media&token=74b29aaa-480a-4575-aaf4-60f284823eb5',
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
+            slider1ActiveSlide: SLIDER_1_FIRST_ITEM,
+            album : [],
+            gender : this.props.navigation.state.params.gender
         }
     }
 
     componentWillMount() {
-        const database = firebase.database().ref(`images/men/banner`)
+        //const {params} = this.props.navigation.state
+        const database = firebase.database().ref(`images/${this.state.gender}`)
         database.on('value',(data) => {
             const userData = data.val()
-            const {name,gender,birthday,address} = userData
             this.setState({
                 album : userData
             })
         })
-        this.getImage()
     }
 
+    // _renderItemWithParallax ({item, index}, parallaxProps) {
+    //     return (
+    //         <SliderEntry
+    //           onPress = {() => this.props.navigation.navigate('Image')}
+    //           data={item}
+    //           even={(index + 1) % 2 === 0}
+    //           //even={true}
+    //           parallax={true}
+    //           parallaxProps={parallaxProps}
+    //         />
+    //     );
+    // }
+
     _renderItemWithParallax ({item, index}, parallaxProps) {
+        const dataItem = {
+            title: item.title,
+            subtitle: 'Lorem ipsum dolor sit amet',
+            illustration: item.background
+        }
+        const {images} = item
         return (
             <SliderEntry
-              onPress = {() => this.props.navigation.navigate('Image')}
-              data={item}
-              even={(index + 1) % 2 === 0}
+              onPress = {() => this.props.navigation.navigate('Image',{ images})}
+              data={dataItem}
+              even={this.state.gender === 'men'}
               //even={true}
               parallax={true}
               parallaxProps={parallaxProps}
@@ -129,7 +150,7 @@ export default class AlbumScreen extends Component {
                 <Text style={styles.subtitle}>{title}</Text> */}
                 <Carousel
                   ref={c => this._slider1Ref = c}
-                  data={ENTRIES1}
+                  data={this.state.album}
                   renderItem={this._renderItemWithParallax.bind(this)}
                   sliderWidth={sliderWidth}
                   itemWidth={itemWidth}
@@ -155,10 +176,9 @@ export default class AlbumScreen extends Component {
                       backgroundColor={'rgba(0, 0, 0, 0.3)'}
                       barStyle={'light-content'}
                     />
-                    <ImageBackground style = {{width : '100%',height : '100%'}} source = {{uri : 'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/test%2Fboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircutboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircut-long.jpg?alt=media&token=7f7880a1-04f7-4726-a8f6-12ae94cf58c7'}}>
                     <View style = {{ flex : 1, alignItems : 'center', justifyContent:'center'}}>
-                        <Text style = {{fontSize : 60, color : 'white'}}>Easy Hair</Text>
-                        <Text style = {{fontSize : 30, color : 'white'}}>Kiểu tóc nam</Text>
+                        <Text style = {{fontSize : 50, color : 'white'}}>KIỂU TÓC</Text>
+                        <Text style = {{fontSize : 50, color : 'white'}}>{this.state.gender === 'men'?'NAM':'NỮ'}</Text>
                     </View>
                     <View style = {{flexDirection : 'row', justifyContent : 'space-between', marginHorizontal : 10, marginVertical : 20}}>
                         <TouchableOpacity onPress = {() => { this._slider1Ref.snapToPrev() }} >
@@ -167,9 +187,10 @@ export default class AlbumScreen extends Component {
                         <TouchableOpacity onPress = {() => { this._slider1Ref.snapToNext() }} >
                             <Text>Next</Text>
                         </TouchableOpacity>
+                        {/* <TextButton text = {'Prev'} side = {'left'} color = {'white'} />
+                        <TextButton text = {'Next'} side = {'right'} color = {'white'} /> */}
                     </View>
                         { example1 }
-                    </ImageBackground>
                     
                 </View>
         )

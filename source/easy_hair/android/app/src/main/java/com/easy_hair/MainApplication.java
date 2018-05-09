@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import com.zyu.ReactNativeWheelPickerPackage;
-//import com.airbnb.android.react.maps.MapsPackage;
+import com.airbnb.android.react.maps.MapsPackage;
 import com.imagepicker.ImagePickerPackage;
 import io.invertase.firebase.RNFirebasePackage;
 import io.invertase.firebase.RNFirebasePackage;
@@ -32,7 +32,7 @@ public class MainApplication extends Application implements ReactApplication {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
             new ReactNativeWheelPickerPackage(),
-            //new MapsPackage(),
+            new MapsPackage(),
             new ImagePickerPackage(),
             new RNFirebasePackage(),
             new RNFirebaseAuthPackage(),

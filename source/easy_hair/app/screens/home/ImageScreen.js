@@ -4,7 +4,8 @@ import {
     Dimensions,
     Image,
     FlatList,
-    StyleSheet
+    StyleSheet,
+    TouchableOpacity
 } from 'react-native'
 import firebase from 'react-native-firebase'
 
@@ -71,7 +72,9 @@ class ImageScreen extends Component {
                     showsVerticalScrollIndicator={false}
                     renderItem={({item}) =>
                     {
-                        return <Image source = {{uri : item}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
+                        return <TouchableOpacity onPress = {() => {}}>
+                            <Image source = {{uri : item}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
+                        </TouchableOpacity>
                     }
                     }
                     keyExtractor={(item,index) => index}

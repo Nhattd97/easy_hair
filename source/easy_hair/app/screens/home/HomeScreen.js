@@ -122,7 +122,7 @@ class HomeScreen extends Component {
                 album : userData
             })
         })
-        this.getImage()
+        //this.getImage()
     }
 
     renderAlbums(albums){
@@ -239,10 +239,10 @@ class HomeScreen extends Component {
                         { example1 }
                     <View style = {styles.genderContainer}>
                         <View style = {[styles.genderImage,{marginLeft : 5}]}>
-                            <AlbumDetail onPress = {() => {this.props.navigation.navigate('Album')}} title = {'Nam'} album = {'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/test%2Fboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircutboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircut-long.jpg?alt=media&token=7f7880a1-04f7-4726-a8f6-12ae94cf58c7'}/>
+                            <AlbumDetail onPress = {() => {this.props.navigation.navigate('Album',{gender : 'men'})}} title = {'Nam'} album = {'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/test%2Fboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircutboy-hair-style-best-25-hair-styles-for-boys-ideas-on-pinterest-kids-haircut-long.jpg?alt=media&token=7f7880a1-04f7-4726-a8f6-12ae94cf58c7'}/>
                         </View>
                         <View style = {styles.genderImage}>
-                            <AlbumDetail onPress = {() => {this.props.navigation.navigate('Album')}} title = {'Nữ'} album = {'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/test%2Ftaylor.jpg?alt=media&token=eac3c43a-4c44-47c1-b91f-1374e9726132'}/>
+                            <AlbumDetail onPress = {() => {this.props.navigation.navigate('Album',{gender : 'women'})}} title = {'Nữ'} album = {'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/test%2Ftaylor.jpg?alt=media&token=eac3c43a-4c44-47c1-b91f-1374e9726132'}/>
                         </View>
                     </View>
                     </ScrollView>
@@ -324,7 +324,8 @@ const styles = StyleSheet.create({
     genderContainer : {
         flex : 1,
         flexDirection : 'row',
-        justifyContent : 'center'
+        justifyContent : 'center',
+        marginTop : wp(5)
     },
     genderImage : {
         marginTop : 20,
