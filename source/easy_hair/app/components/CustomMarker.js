@@ -7,6 +7,7 @@ import {
 } from 'react-native'
 import PropTypes from 'prop-types';
 import MapView, {Callout, Marker, Polygon} from 'react-native-maps';
+import BillBoard from './BillBoard.js'
 
 
 const {width, height} = Dimensions.get('window');

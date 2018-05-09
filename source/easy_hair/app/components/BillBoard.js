@@ -3,7 +3,7 @@ import {
     View,
     Text,
     Image,
-    stylesSheet,
+    StyleSheet,
 } from 'react-native'
 import {Rating} from 'react-native-ratings';
 
@@ -44,20 +44,20 @@ class BillBoard extends Component {
 
     render() {
         return (
-            <View styles={{width: this.state.viewLength, height: 50, flexDirection: 'row'}}>
+            <View style={{width: this.state.viewLength, height: 50, flexDirection: 'row'}}>
                 <Image source={this.props.source}
-                       styles={styles.image}
+                       style={styles.image}
                        key={`${this.state.initialRender}`}
                        onLoad={this.onLoad.bind(this)}>
                 </Image>
 
-                <View styles={{flexDirection: 'column'}}>
-                    <Text styles={styles.title}>
+                <View style={{flexDirection: 'column'}}>
+                    <Text style={styles.title}>
                         {this.props.title}
                     </Text>
 
-                    <View styles={{flexDirection: 'row'}}>
-                        <Text styles={styles.point}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={styles.point}>
                             {this.props.rating}
                         </Text>
 
@@ -69,7 +69,7 @@ class BillBoard extends Component {
                             ratingBackgroundColor='#c8c7c8'
                             ratingCount={5}
                             imageSize={13}
-                            styles={styles.rating}/>
+                            style={styles.rating}/>
 
                     </View>
                 </View>
@@ -78,9 +78,9 @@ class BillBoard extends Component {
     }
 }
 
-export {BillBoard}
+export default BillBoard
 
-const styles = stylesSheet.create({
+const styles = StyleSheet.create({
     image: {
         width: 50,
         height: 50,

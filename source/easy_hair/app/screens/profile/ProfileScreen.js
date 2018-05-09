@@ -90,10 +90,10 @@ class ProfileScreen extends Component {
                 `${response.path}`
               )
               .then(
-                  alert(response.path)
+                  //alert(response.path)
               )
               .catch(
-                  alert(response.name)
+                  //alert(response.name)
               );
           
               this.setState({
