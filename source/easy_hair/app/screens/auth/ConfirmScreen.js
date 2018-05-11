@@ -39,7 +39,7 @@ export default class ConfirmScreen extends Component {
 
             <View style={{alignItems:'center', width: 250,}}>
             <Text style={styles.sText}>
-                Bạn đã thay đổi mật khẩu 
+                Bạn đã đăng kí
             </Text>
             <Text style={styles.sText}>
                 thành công!
@@ -61,7 +61,7 @@ export default class ConfirmScreen extends Component {
   backToLoginScreen = () =>
   {
     firebase.auth().signOut()
-    this.props.navigation.navigate("SignIn")
+    this.props.navigation.navigate("Login")
   }
 }
 
