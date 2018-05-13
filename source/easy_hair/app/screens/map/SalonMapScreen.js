@@ -278,8 +278,12 @@ class SalonMapScreen extends Component {
             for (let i = 0; i <= number - 1; ++i) {
                 result.push(arrAfterSort[i]);
             }
+            console.log("number elements: " + result.length);
+            console.log("old Value: " + this.state.markers.length);
             this.setState({markers: result});
+            console.log("new Value: " + this.state.markers.length);
         }
+
     }
 
     /**
@@ -301,6 +305,7 @@ class SalonMapScreen extends Component {
     onPressDetails = () => {
         this.props.navigation.navigate('DetailSalon');
     };
+
 
     render() {
         const interpolations = this.state.markers.map((marker, index) => {
@@ -493,14 +498,14 @@ class SalonMapScreen extends Component {
                                             selectedValue={this.state.numberNearSalons}
                                             itemStyle={{color: "white", fontSize: 26}}
                                             onValueChange={(index) => {
-                                                this.setState({numberNearSalons: index,});
-                                            }}
-                                        >
-                                            {this.state.itemList.map((value, i) =>
-                                                (
-                                                    <Picker.Item label={value} value={i} key={value}/>
-                                                )
-                                            )}
+                                                this.setState({numberNearSalons: index});
+                                            }}>
+                                            {
+                                                this.state.itemList.map((value, i) =>
+                                                    (
+                                                        <Picker.Item label={value} value={i} key={value}/>
+                                                    ))
+                                            }
                                         </Picker>
 
                                         <TouchableOpacity
@@ -508,6 +513,18 @@ class SalonMapScreen extends Component {
                                             onPress={() => {
                                                 this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons);
                                                 this.setState({isShowPicker: false});
+
+                                                if (this.state.numberNearSalons === 1 && this.state.markers.length !== 0) {
+                                                    const {coordinate} = this.state.markers[0];
+                                                    this.map.animateToRegion(
+                                                        {
+                                                            ...coordinate,
+                                                            latitudeDelta: this.state.region.latitudeDelta,
+                                                            longitudeDelta: this.state.region.longitudeDelta,
+                                                        },
+                                                        400 // time to move from old place to new place
+                                                    );
+                                                }
                                             }}>
                                             <Text style={[filterButtonChildText, {fontSize: 20}]}>
                                                 OK
@@ -557,6 +574,17 @@ class SalonMapScreen extends Component {
                                             rating={this.state.ratingFilter}
                                             selectedStar={(rating) => {
                                                 this.setState({ratingFilter: rating});
+                                                if (this.state.numberNearSalons === 1 && this.state.markers.length !== 0) {
+                                                    const {coordinate} = this.state.markers[0];
+                                                    this.map.animateToRegion(
+                                                        {
+                                                            ...coordinate,
+                                                            latitudeDelta: this.state.region.latitudeDelta,
+                                                            longitudeDelta: this.state.region.longitudeDelta,
+                                                        },
+                                                        400 // time to move from old place to new place
+                                                    );
+                                                }
                                             }}
                                         />
 
