@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import {
     Text,
     View,
@@ -11,7 +11,7 @@ import {
     ScrollView,
 } from 'react-native'
 
-import { CustomMarker } from '../../components';
+import {CustomMarker} from '../../components';
 import MapView from "react-native-maps";
 import geolib from 'geolib';
 import SlidingUpPanel from "rn-sliding-up-panel";
@@ -24,17 +24,17 @@ import Picker from 'react-native-wheel-picker';
 //                             Global Variables
 //=====================================================================================
 const Images = [
-    { uri: "https://i.imgur.com/sNam9iJ.jpg" },
-    { uri: "https://i.imgur.com/N7rlQYt.jpg" },
-    { uri: "https://i.imgur.com/UDrH0wm.jpg" },
-    { uri: "https://i.imgur.com/Ka8kNST.jpg" },
-    { uri: "https://firebasestorage.googleapis.com/v0/b/testfirebasestorage-17479.appspot.com/o/Khang.jpg?alt=media&token=456c59ae-96aa-4298-aed7-8191cf90b013" }
+    {uri: "https://i.imgur.com/sNam9iJ.jpg"},
+    {uri: "https://i.imgur.com/N7rlQYt.jpg"},
+    {uri: "https://i.imgur.com/UDrH0wm.jpg"},
+    {uri: "https://i.imgur.com/Ka8kNST.jpg"},
+    {uri: "https://firebasestorage.googleapis.com/v0/b/testfirebasestorage-17479.appspot.com/o/Khang.jpg?alt=media&token=456c59ae-96aa-4298-aed7-8191cf90b013"}
 ];
 
-const { width, height } = Dimensions.get("window");
+const {width, height} = Dimensions.get("window");
 
-const CARD_HEIGHT = height / 3;
-const CARD_WIDTH = width - 50;
+const CARD_HEIGHT = height / 3 - 20;
+const CARD_WIDTH = width - 70;
 
 const filterUp = require('../../assets/images/filter_up.png');
 const filterDown = require("../../assets/images/filter_down.png");
@@ -46,7 +46,7 @@ let OPACITY_STYLE;
 
 class SalonMapScreen extends Component {
     constructor(props) {
-        super(props)
+        super(props);
         this.state = {
             salonsInDatabase: [
                 {
@@ -102,7 +102,7 @@ class SalonMapScreen extends Component {
                         latitude: 10.8834292,
                         longitude: 106.7783064,
                     },
-                    title: "Khang",
+                    title: "Khanggggggggggggggggggggggg",
                     description: "B Dorm, DiAn District, BinhDuong Province",
                     image: Images[4],
                     phone: +84868242564,
@@ -171,19 +171,19 @@ class SalonMapScreen extends Component {
     componentWillMount() {
         this.index = 0;
         this.animation = new Animated.Value(0);
-        this.setState({ markers: this.state.salonsInDatabase });
+        this.setState({markers: this.state.salonsInDatabase});
 
         let temp = [];
         for (let i = 0; i <= this.state.salonsInDatabase.length; ++i) {
             temp.push(i.toString());
         }
-        this.setState({ itemList: temp });
+        this.setState({itemList: temp});
     }
 
     componentDidMount() {
         // We should detect when scrolling has stopped then animate
         // We should just debounce the event listener here
-        this.animation.addListener(({ value }) => {
+        this.animation.addListener(({value}) => {
             let index = Math.floor(value / CARD_WIDTH + 0.4); // animate 30% away from landing on the next item
             if (index >= this.state.markers.length) {
                 index = this.state.markers.length - 1;
@@ -194,47 +194,47 @@ class SalonMapScreen extends Component {
 
             clearTimeout(this.regionTimeout);
             this.regionTimeout = setTimeout(() => {
-                if (this.index !== index) {
-                    this.index = index;
-                    const { coordinate } = this.state.markers[index];
-                    this.map.animateToRegion(
-                        {
-                            ...coordinate,
-                            latitudeDelta: this.state.region.latitudeDelta,
-                            longitudeDelta: this.state.region.longitudeDelta,
-                        },
-                        400 // time to move from old place to new place
-                    );
-                }
+                    if (this.index !== index) {
+                        this.index = index;
+                        const {coordinate} = this.state.markers[index];
+                        this.map.animateToRegion(
+                            {
+                                ...coordinate,
+                                latitudeDelta: this.state.region.latitudeDelta,
+                                longitudeDelta: this.state.region.longitudeDelta,
+                            },
+                            400 // time to move from old place to new place
+                        );
+                    }
 
-            },
+                },
                 10 // number of delay time that the function call should be delayed by
             );
         });
 
         clearTimeout(this.distanceTimeOut);
         this.distanceTimeOut = setTimeout(() => {
-            for (let i = 0; i <= this.state.markers.length - 1; ++i) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        let dis = geolib.getDistance(position.coords, {
-                            latitude: this.state.markers[i].coordinate.latitude,
-                            longitude: this.state.markers[i].coordinate.longitude,
-                        });
-                        //this.setState({tempDistance: dis});
-                        this.state.markers[i].distance = dis;
-                    },
-                    () => {
-                        alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
-                        this.setState({ tempDistance: -1 });
-                        this.state.markers[i].distance = this.state.tempDistance;
-                    },
-                    {
-                        enableHighAccuracy: false, timeout: 20000
-                    }
-                );
-            }
-        },
+                for (let i = 0; i <= this.state.markers.length - 1; ++i) {
+                    navigator.geolocation.getCurrentPosition(
+                        (position) => {
+                            let dis = geolib.getDistance(position.coords, {
+                                latitude: this.state.markers[i].coordinate.latitude,
+                                longitude: this.state.markers[i].coordinate.longitude,
+                            });
+                            //this.setState({tempDistance: dis});
+                            this.state.markers[i].distance = dis;
+                        },
+                        () => {
+                            alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
+                            this.setState({tempDistance: -1});
+                            this.state.markers[i].distance = this.state.tempDistance;
+                        },
+                        {
+                            enableHighAccuracy: false, timeout: 20000
+                        }
+                    );
+                }
+            },
             1000);
 
     }
@@ -270,7 +270,7 @@ class SalonMapScreen extends Component {
             for (let i = 0; i <= arrAfterSort.length - 1; ++i) {
                 result.push(arrAfterSort[i]);
             }
-            this.setState({ markers: result });
+            this.setState({markers: result});
         }
 
         else {
@@ -278,7 +278,7 @@ class SalonMapScreen extends Component {
             for (let i = 0; i <= number - 1; ++i) {
                 result.push(arrAfterSort[i]);
             }
-            this.setState({ markers: result });
+            this.setState({markers: result});
         }
     }
 
@@ -286,7 +286,7 @@ class SalonMapScreen extends Component {
      * get All salons
      */
     getAllSalons() {
-        this.setState({ markers: this.state.salonsInDatabase });
+        this.setState({markers: this.state.salonsInDatabase});
     }
 
 
@@ -294,14 +294,13 @@ class SalonMapScreen extends Component {
      * An event when Pop Up on dismissed
      */
     onPopUpDismissed() {
-        this.setState({ isShowPopUpDialog: false });
+        this.setState({isShowPopUpDialog: false});
         this.getSalonsByRating(this.state.ratingFilter);
     }
 
-    onPressDetails = () =>
-    {
+    onPressDetails = () => {
         this.props.navigation.navigate('DetailSalon');
-    }
+    };
 
     render() {
         const interpolations = this.state.markers.map((marker, index) => {
@@ -320,7 +319,7 @@ class SalonMapScreen extends Component {
                 outputRange: [0.35, 1, 0.35],
                 extrapolate: "clamp",
             });
-            return { scale, opacity };
+            return {scale, opacity};
         });
 
         let imgFilter = this.state.visible ? filterDown : filterUp;
@@ -362,8 +361,8 @@ class SalonMapScreen extends Component {
                                 rating={marker.rating}>
 
                                 <Animated.View style={[styles.markerWrap, opacityStyle]}>
-                                    <Animated.View style={[styles.ring, scaleStyle]} />
-                                    <View style={styles.coordinateMarker} />
+                                    <Animated.View style={[styles.ring, scaleStyle]}/>
+                                    <View style={styles.coordinateMarker}/>
                                 </Animated.View>
                             </CustomMarker>);
                     })}
@@ -385,7 +384,7 @@ class SalonMapScreen extends Component {
                                 },
                             },
                         ],
-                        { useNativeDriver: true }
+                        {useNativeDriver: true}
                     )}
                     style={styles.scrollView}
                     contentContainerStyle={styles.endPadding}>
@@ -393,57 +392,60 @@ class SalonMapScreen extends Component {
                     {this.state.markers.map((marker, index) => (
                         <View style={styles.card} key={index}>
 
-
                             <Image
                                 source={marker.image}
                                 style={styles.cardImage}
-                                resizeMode="cover"
-                            />
+                                resizeMode="cover"/>
 
-                            <View style={styles.textContent}>
-                                <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
-                                    <Text numberOfLines={1}
-                                        style={styles.cardTitle}>
+                            <View style={styles.cover}>
+                                <View style={styles.textContent}>
+
+                                    <Text style={styles.textSalon}>
+                                        SALON
+                                    </Text>
+
+                                    <Text numberOfLines={3}
+                                          style={styles.cardTitle}>
                                         {marker.title}
                                     </Text>
 
-                                    <TouchableOpacity
-                                        onPress={this.onPressDetails.bind(this)}>
-                                        <Text>
-                                            Details
-                                        </Text>
-                                    </TouchableOpacity>
+                                    <View style={styles.viewPhoneAndLocation}>
+                                        <View style={{flexDirection: "row"}}>
+                                            <Image
+                                                style={{width: 20, height: 20}}
+                                                source={require("../../assets/images/phone.png")}/>
+                                            <Text numberOfLines={1}
+                                                  style={styles.cardDescription}>
+                                                {marker.phone}
+                                            </Text>
+                                        </View>
+
+                                        <View style={{flexDirection: "row"}}>
+                                            <Image
+                                                style={{width: 20, height: 20, marginTop: 10}}
+                                                source={require("../../assets/images/location.png")}/>
+                                            <Text numberOfLines={1}
+                                                  style={[styles.cardDescription, {marginTop: 10}]}>
+                                                {marker.distance / 1000 + " km"}
+                                            </Text>
+                                        </View>
+                                    </View>
                                 </View>
 
-                                <Text numberOfLines={1}
-                                    style={styles.cardDescription}>
-                                    {marker.description}
-                                </Text>
+                                <TouchableOpacity
+                                    style={styles.infoButton}
+                                    onPress={this.onPressDetails.bind(this)}>
+                                    <Image source={require('../../assets/images/info.png')}
+                                           style={{width: 17, height: 17, marginBottom: 5}}
+                                           resizeMode="cover"/>
 
-                                <View style={{ flexDirection: "row", marginTop: 3 }}>
-                                    <View style={{ flexDirection: "row", marginLeft: 15 }}>
-                                        <Image
-                                            style={{ width: 20, height: 20 }}
-                                            source={require("../../assets/images/phone.png")} />
-                                        <Text numberOfLines={1}
-                                            style={styles.cardDescription}>
-                                            {"\t" + marker.phone}
-                                        </Text>
-                                    </View>
+                                    <Text style={{fontFamily: "TitanOne-Regular", fontSize: 12}}>
+                                        INFOS
+                                    </Text>
+                                </TouchableOpacity>
 
-
-                                    <View style={{ flexDirection: "row", marginLeft: CARD_WIDTH / 5 }}>
-                                        <Image
-                                            style={{ width: 20, height: 20 }}
-                                            source={require("../../assets/images/location.png")} />
-                                        <Text numberOfLines={1}
-                                            style={styles.cardDescription}>
-                                            {marker.distance / 1000 + " km"}
-                                        </Text>
-                                    </View>
-
-                                </View>
                             </View>
+
                         </View>
                     ))}
 
@@ -453,114 +455,115 @@ class SalonMapScreen extends Component {
                 <SlidingUpPanel
                     visible={this.state.visible}
                     height={height - 200}
-                    draggableRange={{ top: height - 200, bottom: 0 }}
+                    draggableRange={{top: height - 200, bottom: 0}}
                     onRequestClose={() => {
-                        this.setState({ visible: false, isShowPopUpDialog: false, isShowPicker: false, })
+                        this.setState({visible: false, isShowPopUpDialog: false, isShowPicker: false,})
                     }}
                     allowDragging={false}>
-                    <ScrollView style={{ flex: 1 }}>
-                        <View style={viewPanel}>
-                            <TouchableOpacity
-                                style={filterButtonChild}
-                                onPress={() => {
-                                    this.getAllSalons();
-                                }}>
-                                <Text style={filterButtonChildText}>
-                                    ALL
+                    <ScrollView contentContainerStyle={viewPanel}>
+                        <TouchableOpacity
+                            style={filterButtonChild}
+                            onPress={() => {
+                                this.getAllSalons();
+                            }}>
+                            <Text style={filterButtonChildText}>
+                                ALL
                             </Text>
-                            </TouchableOpacity>
+                        </TouchableOpacity>
 
-                            {
-                                this.state.isShowPicker === false ?
-                                    (
-                                        <TouchableOpacity
-                                            style={filterButtonChild}
-                                            onPress={() => {
-                                                this.setState({ isShowPicker: true });
-                                            }}>
-                                            <Text style={filterButtonChildText}>
-                                                NEARLY
+                        {
+                            this.state.isShowPicker === false ?
+                                (
+                                    <TouchableOpacity
+                                        style={filterButtonChild}
+                                        onPress={() => {
+                                            this.setState({isShowPicker: true});
+                                        }}>
+                                        <Text style={filterButtonChildText}>
+                                            NEARLY
                                         </Text>
-                                        </TouchableOpacity>
-                                    )
-                                    :
-                                    (
-                                        <View
-                                            style={styles.viewCoverWheelPicker}>
-                                            <Picker
-                                                style={styles.wheelPicker}
-                                                selectedValue={this.state.numberNearSalons}
-                                                itemStyle={{ color: "white", fontSize: 26 }}
-                                                onValueChange={(index) => {
-                                                    this.setState({ numberNearSalons: index, });
-                                                }}
-                                            >
-                                                {this.state.itemList.map((value, i) =>
-                                                    (
-                                                        <Picker.Item label={value} value={i} key={value} />
-                                                    )
-                                                )}
-                                            </Picker>
+                                    </TouchableOpacity>
+                                )
+                                :
+                                (
+                                    <View
+                                        style={styles.viewCoverWheelPicker}>
+                                        <Picker
+                                            style={styles.wheelPicker}
+                                            selectedValue={this.state.numberNearSalons}
+                                            itemStyle={{color: "white", fontSize: 26}}
+                                            onValueChange={(index) => {
+                                                this.setState({numberNearSalons: index,});
+                                            }}
+                                        >
+                                            {this.state.itemList.map((value, i) =>
+                                                (
+                                                    <Picker.Item label={value} value={i} key={value}/>
+                                                )
+                                            )}
+                                        </Picker>
 
-                                            <TouchableOpacity
-                                                style={[filterButtonChild, { width: 70, height: 50 }]}
-                                                onPress={() => {
-                                                    this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons);
-                                                    this.setState({ isShowPicker: false });
-                                                }}>
-                                                <Text style={[filterButtonChildText, { fontSize: 20 }]}>
-                                                    OK
+                                        <TouchableOpacity
+                                            style={[filterButtonChild, {width: 70, height: 50}]}
+                                            onPress={() => {
+                                                this.getSalonsByNearestSalons(this.state.salonsInDatabase.length, this.state.numberNearSalons);
+                                                this.setState({isShowPicker: false});
+                                            }}>
+                                            <Text style={[filterButtonChildText, {fontSize: 20}]}>
+                                                OK
                                             </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    )
-                            }
-
-                            {
-                                this.state.isShowPopUpDialog === false ?
-                                    (
-                                        <TouchableOpacity
-                                            style={[filterButtonChild,]}
-                                            onPress={() => {
-                                                this.setState({ isShowPopUpDialog: true, isShowPicker: false })
-                                            }
-                                            }>
-                                            <Text style={filterButtonChildText}>
-                                                RATING
-                                        </Text>
                                         </TouchableOpacity>
-                                    )
-                                    :
-                                    (
-                                        < PopupDialog
-                                            style={{ backgroundColor: "red" }}
-                                            width={width}
-                                            height={100}
-                                            dialogStyle={{ backgroundColor: "black" }}
-                                            show={this.state.isShowPopUpDialog}
-                                            onDismissed={() => {
-                                                this.onPopUpDismissed();
-                                            }}>
+                                    </View>
+                                )
+                        }
 
-                                            <StarRating
-                                                starStyle={{ marginTop: 15, justifyContent: "center", alignItems: "center" }}
-                                                starSize={60}
-                                                disabled={false}
-                                                emptyStar={require('../../assets/images/empty-star.png')}
-                                                fullStar={require('../../assets/images/full-star.png')}
-                                                maxStars={5}
-                                                rating={this.state.ratingFilter}
-                                                selectedStar={(rating) => {
-                                                    this.setState({ ratingFilter: rating });
-                                                }}
-                                            />
+                        {
+                            this.state.isShowPopUpDialog === false ?
+                                (
+                                    <TouchableOpacity
+                                        style={[filterButtonChild,]}
+                                        onPress={() => {
+                                            this.setState({isShowPopUpDialog: true, isShowPicker: false})
+                                        }
+                                        }>
+                                        <Text style={filterButtonChildText}>
+                                            RATING
+                                        </Text>
+                                    </TouchableOpacity>
+                                )
+                                :
+                                (
+                                    < PopupDialog
+                                        style={{backgroundColor: "red"}}
+                                        width={width}
+                                        height={100}
+                                        dialogStyle={{backgroundColor: "black"}}
+                                        show={this.state.isShowPopUpDialog}
+                                        onDismissed={() => {
+                                            this.onPopUpDismissed();
+                                        }}>
 
-                                        </PopupDialog>
-                                    )
-                            }
+                                        <StarRating
+                                            starStyle={{
+                                                marginTop: 15,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                            }}
+                                            starSize={60}
+                                            disabled={false}
+                                            emptyStar={require('../../assets/images/empty-star.png')}
+                                            fullStar={require('../../assets/images/full-star.png')}
+                                            maxStars={5}
+                                            rating={this.state.ratingFilter}
+                                            selectedStar={(rating) => {
+                                                this.setState({ratingFilter: rating});
+                                            }}
+                                        />
 
+                                    </PopupDialog>
+                                )
+                        }
 
-                        </View>
                     </ScrollView>
                 </SlidingUpPanel>
 
@@ -570,13 +573,13 @@ class SalonMapScreen extends Component {
                         style={styleFilter}
                         onPress={() => {
                             if (this.state.visible)
-                                this.setState({ visible: false });
+                                this.setState({visible: false});
                             else
-                                this.setState({ visible: true });
+                                this.setState({visible: true});
                         }}>
 
                         <Image source={imgFilter}
-                            style={{ width: 30, height: 30 }} />
+                               style={{width: 30, height: 30}}/>
 
                         <Text style={filterText}>
                             FILTER
@@ -619,40 +622,88 @@ const styles = StyleSheet.create({
         },
     card:
         {
-            padding: 10,
-            elevation: 2,
-            backgroundColor: "#FFF",
-            marginHorizontal: 10,
-            shadowColor: "#000",
-            shadowRadius: 5,
-            shadowOpacity: 0.3,
-            shadowOffset: { x: 2, y: -2 },
+            // padding: 10,
+            // elevation: 2,
+            // backgroundColor: "#fff",
+            // marginHorizontal: 10,
+            // shadowColor: "#000",
+            // shadowRadius: 5,
+            // shadowOpacity: 0.3,
+            // shadowOffset: { x: 2, y: -2 },
+            // height: CARD_HEIGHT + 20,
+            // width: CARD_WIDTH,
+            // overflow: "hidden",
+            // borderRadius: 30,
+
+            backgroundColor: "transparent",
             height: CARD_HEIGHT + 20,
             width: CARD_WIDTH,
+            marginHorizontal: 10,
+            flexDirection: "row",
             overflow: "hidden",
-            borderRadius: 30,
+
         },
     cardImage:
         {
-            flex: 3,
+            flex: 1,
             width: "100%",
             height: "100%",
-            borderRadius: 20,
+            borderRadius: 5,
+        },
+    cover:
+        {
+            flex: 2,
+            backgroundColor: "transparent",
+        },
+    infoButton:
+        {
+            position: "absolute",
+            right: 0,
+            bottom: 0,
+            width: 50,
+            height: 50,
+            backgroundColor: "#dfbb7f",
+            borderRadius: 5,
+            justifyContent: "center",
+            alignItems: "center",
+            elevation: 2, // only supported on Android 5.0+
         },
     textContent:
         {
             flex: 1,
+            marginTop: 10,
+            marginBottom: 10,
+            marginRight: 10,
+            backgroundColor: "#fff",
+            borderRadius: 2,
+            elevation: 2,
+        },
+    textSalon:
+        {
+            marginTop: 20,
+            marginLeft: 20,
+            color: "#d5cfc7",
+            fontWeight: "bold"
         },
     cardTitle:
         {
-            fontSize: 15,
-            marginTop: 2,
+            fontSize: 22,
+            marginLeft: 30,
+            marginTop: 5,
             fontWeight: "bold",
+            color: "#0d1319",
+        },
+    viewPhoneAndLocation:
+        {
+            position: "absolute",
+            top: 135,
+            left: 20,
         },
     cardDescription:
         {
-            fontSize: 12,
-            color: "#444",
+            fontSize: 15,
+            marginLeft: 5,
+            color: "#c0c0ad",
         },
     markerWrap:
         {
@@ -783,7 +834,6 @@ const styles = StyleSheet.create({
         },
     viewCoverWheelPicker:
         {
-            flex: 1,
             flexDirection: 'row',
             justifyContent: "center",
             alignItems: "center",
