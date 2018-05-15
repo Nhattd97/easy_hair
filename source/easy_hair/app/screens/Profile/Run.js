@@ -24,7 +24,7 @@ export default class Run extends Component {
   render() {
     return (
       <View style={{ flex: 1}}>
-          <UserFeedback image='https://s3.r29static.com//bin/entry/c6b/340x408/1772845/image.png' userName="Lam" comment="This salon is very good" />
+          <UserFeedback image='https://s3.r29static.com//bin/entry/c6b/340x408/1772845/image.png' userName="Hoàng Lâm"  count="2" />
       </View>
     );
   }
