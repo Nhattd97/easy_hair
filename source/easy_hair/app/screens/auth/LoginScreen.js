@@ -14,7 +14,8 @@ import {
     TextInput,
     TouchableHighlight,
     Alert,
-    AsyncStorage
+    AsyncStorage,
+    Dimensions
  } from 'react-native';
 import * as AuthActions from '../../actions/AuthAction'
 import { connect } from 'react-redux'
@@ -211,6 +212,8 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps,mapDispatchToProps)(LoginScreen)
 
+const {width, height} = Dimensions.get('window');
+
  const styles = StyleSheet.create({
     container:{
         flex: 1,
@@ -223,10 +226,10 @@ export default connect(mapStateToProps,mapDispatchToProps)(LoginScreen)
         flexGrow: 1,
     },
 
-    background:{ 
+    background:{
         flex: 1,
         width:'150%',
-        height: '100%',
+        height: height,
     },
 
     title:{
