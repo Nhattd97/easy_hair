@@ -5,7 +5,8 @@ const INITIAL_STATE = {
     text : '',
     confirmResult : null,
     user : null,
-    phone : ''
+    phone : '',
+    userInfo : null
 }
 
 export default (state = INITIAL_STATE, action) => {

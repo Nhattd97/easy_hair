@@ -29,13 +29,20 @@ function wh (percentage) {
 
 class SalonDetailScreen extends Component {
 
+    static navigationOptions = {
+        headerTitle : 'Chi tiết',
+    };
+
     constructor(props) {
         super(props)
+        const {params} = this.props.navigation.state
+        const data = params.data
+
         this.state = {
-            salonName : 'Hoang Huy',
-            phone : '',
-            address : 'Quan 3, Ho Chi Minh',
-            background : "https://s3-media4.fl.yelpcdn.com/bphoto/x77J3sxFkWwKHakDSyhDIw/o.jpg",
+            salonName : data.title,
+            phone : data.phone,
+            address : data.description,
+            background : data.background,
             images : ['https://i.imgur.com/UYiroysl.jpg','https://i.imgur.com/UPrs1EWl.jpg','https://i.imgur.com/MABUbpDl.jpg','https://i.imgur.com/KZsmUi2l.jpg','https://i.imgur.com/UYiroysl.jpg','https://i.imgur.com/UPrs1EWl.jpg'],
             feedback : [
                 {
@@ -68,7 +75,7 @@ class SalonDetailScreen extends Component {
                 <ScrollView>
                     <View>
                         <ImageBackground style = {styles.background} source = {{uri : this.state.background}}>
-                            <View>
+                            <View style = {{}}>
                                 <Text style = {styles.salonName}>{this.state.salonName}</Text>
                                 <Text style = {styles.address}>{this.state.address}</Text>
                             </View>
@@ -101,7 +108,7 @@ class SalonDetailScreen extends Component {
                                 return <Image source = {{uri : item}}  style = {{width : 100, height : 150 , marginRight : 5}}/>
                             }
                             }
-                            keyExtractor={(item,index) => index}
+                            keyExtractor={(item,index) => item}
                         />
                     </View>
                     <View>
@@ -123,7 +130,7 @@ class SalonDetailScreen extends Component {
                                 return <UserFeedback  image = {item.image}  comment = {item.comment} userName = {item.userName}/>
                             }
                             }
-                            keyExtractor={(item,index) => index}
+                            keyExtractor={(item,index) => item.userName}
                         />
                     </View>
                 </ScrollView>
@@ -142,7 +149,8 @@ const styles = StyleSheet.create({
         width : '100%',
         height : wh(50),
         justifyContent : 'center',
-        alignItems : 'center'
+        alignItems : 'center',
+        marginBottom : wp(2)
     },
     salonName : {
         fontSize : 40,

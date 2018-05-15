@@ -23,9 +23,12 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-       <meta-data
+       <!-- <meta-data
                 android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyDtHoCwRolZ5ND0QOebIfpNFmJLRTG9x6A"/>
+                android:value="AIzaSyDtHoCwRolZ5ND0QOebIfpNFmJLRTG9x6A"/> -->
+        <meta-data
+                android:name="com.google.android.geo.API_KEY"
+                android:value="AIzaSyB5iS3ezbpmWryheMMjsMfS4Tie4-xfzuY"/>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 

@@ -26,7 +26,7 @@ class ProfileScreen extends Component {
     constructor(props){
         super(props);
         this.state={
-            avatarSource: '',
+            avatar: '',
             userData : null,
             name : '',
             gender : '',
@@ -36,16 +36,17 @@ class ProfileScreen extends Component {
         }
     }
 
-    componentDidMount() {
+    componentWillMount() {
         const database = firebase.database().ref(`users/${this.props.user.uid}`)
         database.on('value',(data) => {
             const userData = data.val()
-            const {name,gender,birthday,address} = userData
+            const {name,gender,birthday,address,avatar} = userData
             this.setState({
                 name,
                 gender,
                 birthday,
-                address
+                address,
+                avatar
             })
         })
     }
@@ -62,7 +63,7 @@ class ProfileScreen extends Component {
 
     setImage(url) {
         this.setState({
-            avatarSource : url
+            avatar : url
         })
     }
 
@@ -96,18 +97,18 @@ class ProfileScreen extends Component {
                   //alert(response.name)
               );
           
-              this.setState({
-                avatarSource: source
-              });
+            //   this.setState({
+            //     avatar: source
+            //   });
             }
           });
     }
 
     render() {
-        let img = this.state.avatarSource === null || this.state.avatarSource ===''? 
+        let img = this.state.avatar === null || this.state.avatar ===''? 
         <Image style={{ width: 130, height: 130, borderRadius: 100, position: 'absolute' }} source={require('../../assets/images/non_avatar.jpg')} />
         :
-        <Image style={{ width: 130, height: 130, borderRadius: 100, position: 'absolute' }} source={this.state.avatarSource} />
+        <Image style={{ width: 130, height: 130, borderRadius: 100, position: 'absolute' }} source={{uri : this.state.avatar}} />
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
                 <View style={{ flex: 4,  alignItems: 'center', justifyContent: 'center' }}>

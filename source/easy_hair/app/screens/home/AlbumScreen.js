@@ -14,6 +14,9 @@ import {
     ImageBackground
 } from 'react-native'
 import firebase from 'react-native-firebase'
+import * as DatabaseActions from '../../actions/DatabaseAction'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import Carousel, {Pagination} from 'react-native-snap-carousel'
 import {SliderEntry, TextButton} from '../../components'
 
@@ -42,40 +45,7 @@ const colors = {
     red : '#e2b9e5'
 };
 
-const ENTRIES1 = [
-    {
-        title: 'Beautiful and dramatic Antelope Canyon',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-        illustration: 'https://i.imgur.com/UYiroysl.jpg'
-    },
-    {
-        title: 'Earlier this morning, NYC',
-        subtitle: 'Lorem ipsum dolor sit amet',
-        illustration: 'https://i.imgur.com/UPrs1EWl.jpg'
-    },
-    {
-        title: 'White Pocket Sunset',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat ',
-        illustration: 'https://i.imgur.com/MABUbpDl.jpg'
-    },
-    {
-        title: 'Acrocorinth, Greece',
-        subtitle: 'Lorem ipsum dolor sit amet et nuncat mergitur',
-        illustration: 'https://i.imgur.com/KZsmUi2l.jpg'
-    },
-    {
-        title: 'The lone tree, majestic landscape of New Zealand',
-        subtitle: 'Lorem ipsum dolor sit amet',
-        illustration: 'https://i.imgur.com/2nCt3Sbl.jpg'
-    },
-    {
-        title: 'Middle Earth, Germany',
-        subtitle: 'Lorem ipsum dolor sit amet',
-        illustration: 'https://i.imgur.com/lceHsT6l.jpg'
-    }
-];
-
-export default class AlbumScreen extends Component {
+class AlbumScreen extends Component {
     // static navigationOptions = ({ navigation }) => {
     //     return {
     //       headerStyle: {
@@ -96,16 +66,12 @@ export default class AlbumScreen extends Component {
             album : [],
             gender : this.props.navigation.state.params.gender
         }
+        
     }
 
     componentWillMount() {
-        //const {params} = this.props.navigation.state
-        const database = firebase.database().ref(`images/${this.state.gender}`)
-        database.on('value',(data) => {
-            const userData = data.val()
-            this.setState({
-                album : userData
-            })
+        this.setState({
+            album : this.state.gender === 'men' ? this.props.menAlbum : this.props.womenAlbum
         })
     }
 
@@ -176,19 +142,24 @@ export default class AlbumScreen extends Component {
                       backgroundColor={'rgba(0, 0, 0, 0.3)'}
                       barStyle={'light-content'}
                     />
+                    <View style = {{marginTop : wp(8), marginLeft : wp(3)}}>
+                        <TouchableOpacity onPress = {() => this.props.navigation.goBack()}>
+                            <Image source = {require('../../assets/images/Back_WHITE.png')}/>
+                        </TouchableOpacity>
+                    </View>
                     <View style = {{ flex : 1, alignItems : 'center', justifyContent:'center'}}>
                         <Text style = {{fontSize : 50, color : 'white'}}>KIỂU TÓC</Text>
                         <Text style = {{fontSize : 50, color : 'white'}}>{this.state.gender === 'men'?'NAM':'NỮ'}</Text>
                     </View>
                     <View style = {{flexDirection : 'row', justifyContent : 'space-between', marginHorizontal : 10, marginVertical : 20}}>
-                        <TouchableOpacity onPress = {() => { this._slider1Ref.snapToPrev() }} >
+                        {/* <TouchableOpacity onPress = {() => { this._slider1Ref.snapToPrev() }} >
                             <Text>Prev</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress = {() => { this._slider1Ref.snapToNext() }} >
                             <Text>Next</Text>
-                        </TouchableOpacity>
-                        {/* <TextButton text = {'Prev'} side = {'left'} color = {'white'} />
-                        <TextButton text = {'Next'} side = {'right'} color = {'white'} /> */}
+                        </TouchableOpacity> */}
+                        <TextButton text = {'Prev'} side = {'left'} color = {'white'} style={{width:50}} onPress = {() => { this._slider1Ref.snapToPrev() }}/>
+                        <TextButton text = {'Next'} side = {'right'} color = {'white'} style={{width:50}} onPress = {() => { this._slider1Ref.snapToNext() }}/>
                     </View>
                         { example1 }
                     
@@ -196,6 +167,21 @@ export default class AlbumScreen extends Component {
         )
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        menAlbum : state.Database.menAlbum,
+        womenAlbum : state.Database.womenAlbum
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        DatabaseActions : bindActionCreators(DatabaseActions,dispatch)
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(AlbumScreen)
 
 const styles = StyleSheet.create({
     safeArea: {
