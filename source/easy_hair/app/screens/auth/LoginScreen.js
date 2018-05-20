@@ -18,6 +18,7 @@ import {
     Dimensions
  } from 'react-native';
 import * as AuthActions from '../../actions/AuthAction'
+import * as DatabaseActions from '../../actions/DatabaseAction'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
@@ -67,10 +68,17 @@ class LoginScreen extends Component {
         }
         this.props.AuthActions.login(user,() => {
             this.signInAsync()
+            
         },(error) => {
             this.setState({ isLoading : false })
             alert(error)
         })
+    }
+    
+    componentWillUnmount() {
+            this.props.DatabaseActions.getListSalon(()=>{},()=>{})
+            this.props.DatabaseActions.getMenAlbum(()=>{},()=>{})
+            this.props.DatabaseActions.getWomenAlbum(()=>{},()=>{})
     }
 
     checker = () =>
@@ -207,6 +215,7 @@ class LoginScreen extends Component {
 function mapDispatchToProps(dispatch) {
     return {
         AuthActions: bindActionCreators(AuthActions, dispatch),
+        DatabaseActions : bindActionCreators(DatabaseActions,dispatch)
     };
 }
 

@@ -12,11 +12,29 @@ import {
     StatusBar,
     Platform,
     ImageBackground,
-    FlatList
+    FlatList,
 } from 'react-native'
+import firebase from 'react-native-firebase'
 import Carousel, {Pagination} from 'react-native-snap-carousel'
 import {SliderEntry} from '../components'
 import ImageText from '../components/ImageText'
+import RNFetchBlob from 'react-native-fetch-blob'
+import ImagePicker from 'react-native-image-picker'
+
+var options = {
+    title: 'Select Avatar',
+  
+    storageOptions: {
+      skipBackup: true,
+      path: 'images'
+    }
+  };
+
+const Blod = RNFetchBlob.polyfill.Blob
+const fs = RNFetchBlob.fs
+
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blod
 
 const IS_IOS = Platform.OS === 'ios';
 const { width, height } = Dimensions.get('window');
@@ -44,122 +62,95 @@ const itemHorizontalMargin = wp(2);
      red : '#e2b9e5'
  };
 
+ var storageRef = firebase.storage()
+ const path = 'Users/TranNhat/Documents/easy_hair/source/easy_hair/app/assets/images/marker.png'
+
 export default class TestScreen extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            albumCrop : [
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F1.jpg?alt=media&token=69ea69df-e322-455a-9e33-f508b3c20d3b",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F2.jpg?alt=media&token=a32dacf5-db6d-48e1-b63c-ef2f9482668f",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F3.jpg?alt=media&token=78cedf42-b86f-4d08-b569-e1de33e2964d",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F4.jpg?alt=media&token=b4f26da1-1e65-42e9-87ac-f95a124f4fe3",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F5.jpg?alt=media&token=4a13f451-133c-4d24-b82a-fe1142d2c3a9",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F6.jpg?alt=media&token=ab9ece05-2435-42cd-91c1-11b03d84f48e",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcrop%2F7.jpg?alt=media&token=770db097-b48e-4ee4-a3ba-752a17a4feef",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F1.jpg?alt=media&token=74b29aaa-480a-4575-aaf4-60f284823eb5",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F2.jpg?alt=media&token=16c48eee-ab0b-40ad-b8ca-670fa07b3cb0",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F3.jpg?alt=media&token=126e1b10-fa20-4adb-bd51-18dac067df1f",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F4.jpg?alt=media&token=2a11771d-5204-405c-a755-e206c80b3a9f",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F5.jpg?alt=media&token=c510cea6-4d72-45c7-9492-e9ce6c828144",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F6.jpg?alt=media&token=ab5db736-d734-403b-8ba1-39a11fbcd981",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F7.jpg?alt=media&token=2a890a47-37f3-4120-9fcc-7bbd86cdd99a",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F8.jpg?alt=media&token=76ecdc9b-70cf-4b3f-8c85-ae26e525e834",
-                "https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F9.jpg?alt=media&token=e0d65d9b-8d03-4bc8-8e75-bdd867e5499e"
-            ],
-            arr : [
-                {
-                    name : 'nhat',
-                    phone : '123'
-                },
-                {
-                    name : 'minh',
-                    phone : '456'
-                }
-            ],
-            image : 'https://firebasestorage.googleapis.com/v0/b/easy-hair-914b1.appspot.com/o/images%2Fcurly%2F1.jpg?alt=media&token=74b29aaa-480a-4575-aaf4-60f284823eb5',
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
+            avatarSource : ''
         }
     }
 
-    renderImageItem = (item) => {
-        const dimension = wp(70)
-        return <Image source = {{uri : item}}  style = {{width : dimension, height : dimension, marginRight : wp(3)}}/>
+    // uploadImage = (uri, mime = 'img/jpg') => {
+    //     return new Promise((resolve, reject) => {
+    //         const uploadUri = Platform.OS === 'ios' ? uri.replace('file://','') : uri
+    //         const sessionId = new Date().getTime()
+    //         let uploadBlob = null
+    //         const imageRef = storageRef.ref('avatars').child(`${sessionId}.jpg`)
+
+    //         fs.readFile(uploadUri, 'base64')
+    //         .then(data => {
+    //             return Blod.build(data,{ type : `${mime};BASE64` })
+    //         })
+    //         .then(blob => {
+    //             uploadBlob = blob
+    //             return imageRef.put(uploadUri, {contentType : mime})
+    //         })
+    //         .then(() => {
+    //             uploadBlob.close()
+    //             return imageRef.getDownloadURL()
+    //         })
+    //         .then(url => {
+    //             resolve(url)
+    //         })
+    //         .catch(error => {
+    //             reject(error)
+    //         })
+    //     })
+    // }
+
+    // pickImage = () => {
+    //     ImagePicker.showImagePicker(options, (response) => {
+          
+    //         if (response.didCancel) {
+    //           console.log('User cancelled image picker');
+    //         }
+    //         else if (response.error) {
+    //           console.log('ImagePicker Error: ', response.error);
+    //         }
+    //         else if (response.customButton) {
+    //           console.log('User tapped custom button: ', response.customButton);
+    //         }
+    //         else {
+    //             this.uploadImage(response.uri)
+    //             .then(url => this.setState({avatarSource : url}))
+    //             .catch(error => alert(error))
+    //             //alert(response.path)
+    //         }
+    //       })
+    // }
+
+    pushImage = () => {
+        const ref = storageRef.child('avatars/image.png')
+        var file = new File(['marker'],path)
+        ref.put(file).then(snapshot => {
+            alert('uploaded')
+        }).catch(error => {
+            alert(error)
+        })
     }
 
     render() {
-        const dimension = wp(46)
         return(
-            <View style = {styles.container}>
-                <FlatList
-                    contentContainerStyle = {{ marginLeft : wp(3)}}
-                    numColumns = {2}
-                    data={this.state.albumCrop}
-                    refreshing = {true}
-                    showsVerticalScrollIndicator={false}
-                    renderItem={({item}) =>
-                    <Image source = {{uri : item}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
+            <View>
+                <View>
+                    {
+                        this.state.avatarSource !== '' || this.state.avatarSource !== null ? <Image style = {{width : 50,height : 50}} source = {{uri : this.state.avatarSource}}/> : {}
                     }
-                    keyExtractor={(item,index) => index}
-                />
+                </View>
+                <View>
+                    <TouchableOpacity onPress = {this.pickImage}>
+                    <Text>Upload</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
-    gradient: {
-        ...StyleSheet.absoluteFillObject
-    },
-    scrollview: {
-        flex: 1
-    },
-    exampleContainer: {
-        paddingVertical: 0,
-    },
-    exampleContainerDark: {
-        backgroundColor: colors.black
-    },
-    exampleContainerLight: {
-        backgroundColor: 'white'
-    },
-    title: {
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.9)',
-        fontSize: 20,
-        fontWeight: 'bold',
-        textAlign: 'center'
-    },
-    titleDark: {
-        color: colors.black
-    },
-    subtitle: {
-        marginTop: 5,
-        paddingHorizontal: 30,
-        backgroundColor: 'transparent',
-        color: 'rgba(255, 255, 255, 0.75)',
-        fontSize: 13,
-        fontStyle: 'italic',
-        textAlign: 'center'
-    },
-    slider: {
-        marginTop: 5,
-        overflow: 'visible' // for custom animations
-    },
-    sliderContentContainer: {
-        paddingVertical: 10 // for custom animation
-    },
-    paginationContainer: {
-        paddingVertical: 0
-    },
-    paginationDot: {
-        width: 8,
-        height: 8,
-        borderRadius: 4,
-        marginHorizontal: 8
-    }
+    
 })

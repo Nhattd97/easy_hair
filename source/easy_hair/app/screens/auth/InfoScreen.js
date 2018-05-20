@@ -57,7 +57,8 @@ class InfoScreen extends Component {
             name : this.state.name,
             gender : this.state.selected,
             birthday : this.state.birthday,
-            address : this.state.address
+            address : this.state.address,
+            avatar : ''
         })
     }
 

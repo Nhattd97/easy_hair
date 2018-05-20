@@ -15,13 +15,29 @@
       },
       "oauth_client": [
         {
+          "client_id": "150357269292-ermiop83absarhtorbc6obssa9du1d1t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easy_hair",
+            "certificate_hash": "9cd69cb639394d11e3c5ca0d28b3172812317536"
+          }
+        },
+        {
+          "client_id": "150357269292-1orc22uuudghb86jchj9667mhbqba5ln.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.easy_hair",
+            "certificate_hash": "dff10cfd5bd664037f80887ab15c4a6383d60a7b"
+          }
+        },
+        {
           "client_id": "150357269292-5pbj63ldpmjuubgceuf0j28uoslrlfh4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAliOe_dO0-Iml5-q0ZG72de5arw9cfg9E"
+          "current_key": "AIzaSyDZoZ7Uz4Au8poZuKyrn6G40LNJz6ITbm4"
         }
       ],
       "services": {
@@ -29,8 +45,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "150357269292-5pbj63ldpmjuubgceuf0j28uoslrlfh4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
@@ -40,3 +61,4 @@
   ],
   "configuration_version": "1"
 }
+

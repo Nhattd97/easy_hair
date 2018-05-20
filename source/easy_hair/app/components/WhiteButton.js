@@ -8,10 +8,9 @@ import {
 class WhiteButton extends Component {
     render() {
         return (
-            <TouchableOpacity style = {styles.buttonStyle}>
+            <TouchableOpacity style = {styles.buttonStyle}  onPress = {this.props.onPress}>
                 <Text 
                     style = {styles.textStyle}
-                    onPress = {this.props.onPress}
                 >
                     {this.props.children}
                 </Text>

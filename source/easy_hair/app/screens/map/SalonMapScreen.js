@@ -11,6 +11,8 @@ import {
     ScrollView,
 } from 'react-native'
 
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import {CustomMarker} from '../../components';
 import MapView from "react-native-maps";
 import geolib from 'geolib';
@@ -18,18 +20,12 @@ import SlidingUpPanel from "rn-sliding-up-panel";
 import PopupDialog from 'react-native-popup-dialog';
 import StarRating from 'react-native-star-rating';
 import Picker from 'react-native-wheel-picker';
+import firebase from 'react-native-firebase'
 
 //region Global variables
 //=====================================================================================
 //                             Global Variables
 //=====================================================================================
-const Images = [
-    {uri: "https://i.imgur.com/sNam9iJ.jpg"},
-    {uri: "https://i.imgur.com/N7rlQYt.jpg"},
-    {uri: "https://i.imgur.com/UDrH0wm.jpg"},
-    {uri: "https://i.imgur.com/Ka8kNST.jpg"},
-    {uri: "https://firebasestorage.googleapis.com/v0/b/testfirebasestorage-17479.appspot.com/o/Khang.jpg?alt=media&token=456c59ae-96aa-4298-aed7-8191cf90b013"}
-];
 
 const {width, height} = Dimensions.get("window");
 
@@ -42,75 +38,22 @@ const filterDown = require("../../assets/images/filter_down.png");
 let SCALE_STYLE;
 let OPACITY_STYLE;
 
+const storage = firebase.storage()
+const storageRef = storage.ref()
+
 //endregion
 
 class SalonMapScreen extends Component {
+
+    static navigationOptions = {
+        headerTitle : 'Home',
+        header : null
+    };
+    
     constructor(props) {
         super(props);
         this.state = {
-            salonsInDatabase: [
-                {
-                    coordinate: {
-                        latitude: 10.887485,
-                        longitude: 106.767158,
-                    },
-                    title: "Anh Tuấn",
-                    description: "12 Đường số 11, Linh Xuân, Thủ Đức, Hồ Chí Minh",
-                    image: Images[1],
-                    phone: +842838974335,
-                    rating: 2,
-                    distance: 0,
-                },
-                {
-                    coordinate: {
-                        latitude: 10.876492,
-                        longitude: 106.808571,
-                    },
-                    title: "Nam Bảo Lân",
-                    description: "Đường 621, Phường Linh Trung, Quận Thủ Đức, Thành Phố Hồ Chí Minh",
-                    image: Images[0],
-                    phone: +841633829689,
-                    rating: 1,
-                    distance: 0,
-                },
-                {
-                    coordinate: {
-                        latitude: 10.867649,
-                        longitude: 106.786881,
-                    },
-                    title: "Minh Hoàng",
-                    description: "146 Đường số 17, Phường Linh Trung, Thủ Đức, Hồ Chí Minh",
-                    image: Images[2],
-                    phone: +84919691978,
-                    rating: 3,
-                    distance: 0,
-                },
-                {
-                    coordinate: {
-                        latitude: 10.860831,
-                        longitude: 106.782804,
-                    },
-                    title: "D&D",
-                    description: "40 Đường số 16, Phường Linh Trung, Thu Duc District, Hồ Chí Minh",
-                    image: Images[3],
-                    phone: +84907500803,
-                    rating: 4,
-                    distance: 0,
-                },
-                {
-                    coordinate: {
-                        latitude: 10.8834292,
-                        longitude: 106.7783064,
-                    },
-                    title: "Khanggggggggggggggggggggggg",
-                    description: "B Dorm, DiAn District, BinhDuong Province",
-                    image: Images[4],
-                    phone: +84868242564,
-                    rating: 5,
-                    distance: 0,
-                },
-            ],
-
+            salonsInDatabase : this.props.salonsInDatabase,
             markers: [],
 
             // The region that The Map will be shown at the first time
@@ -225,7 +168,7 @@ class SalonMapScreen extends Component {
                             this.state.markers[i].distance = dis;
                         },
                         () => {
-                            alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
+                            //alert("Can not get distance to \"" + this.state.markers[i].title + "\"\nPlease make sure your location is turned on!");
                             this.setState({tempDistance: -1});
                             this.state.markers[i].distance = this.state.tempDistance;
                         },
@@ -302,8 +245,8 @@ class SalonMapScreen extends Component {
         this.getSalonsByRating(this.state.ratingFilter);
     }
 
-    onPressDetails = () => {
-        this.props.navigation.navigate('DetailSalon');
+    onPressDetails = (data,index,uid) => {
+        this.props.navigation.navigate('DetailSalon',{data,index,uid});
     };
 
 
@@ -362,7 +305,7 @@ class SalonMapScreen extends Component {
                                 markerId={index}
                                 title={marker.title}
                                 description={marker.description}
-                                source={marker.image}
+                                source={{uri :marker.background}}
                                 rating={marker.rating}>
 
                                 <Animated.View style={[styles.markerWrap, opacityStyle]}>
@@ -398,7 +341,7 @@ class SalonMapScreen extends Component {
                         <View style={styles.card} key={index}>
 
                             <Image
-                                source={marker.image}
+                                source={{uri :marker.background}}
                                 style={styles.cardImage}
                                 resizeMode="cover"/>
 
@@ -439,7 +382,9 @@ class SalonMapScreen extends Component {
 
                                 <TouchableOpacity
                                     style={styles.infoButton}
-                                    onPress={this.onPressDetails.bind(this)}>
+                                    onPress={() => {
+                                        this.onPressDetails(marker,index,this.props.user.uid)
+                                    }}>
                                     <Image source={require('../../assets/images/info.png')}
                                            style={{width: 17, height: 17, marginBottom: 5}}
                                            resizeMode="cover"/>
@@ -617,7 +562,20 @@ class SalonMapScreen extends Component {
     }
 }
 
-export default SalonMapScreen
+function mapStateToProps(state) {
+    return {
+        salonsInDatabase : state.Database.salonsInDatabase,
+        user : state.Auth.user        
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(SalonMapScreen)
 
 const styles = StyleSheet.create({
     container:
