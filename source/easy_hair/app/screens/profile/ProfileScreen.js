@@ -1,8 +1,20 @@
 import React, { Component } from 'react'
-import { View, Text, TouchableOpacity, ImageBackground, Image, Alert } from 'react-native'
+import { 
+    View, 
+    Text, 
+    TouchableOpacity, 
+    ImageBackground, 
+    Image, 
+    Alert,
+    Platform,
+    ActivityIndicator,
+    StyleSheet,
+    Modal
+} from 'react-native'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import firebase from 'react-native-firebase'
+import RNFetchBlob from 'react-native-fetch-blob'
 
 import ImagePicker from 'react-native-image-picker'
 
@@ -18,6 +30,12 @@ var options = {
 const storage = firebase.storage()
 const storageRef = storage.ref()
 
+const Blod = RNFetchBlob.polyfill.Blob
+const fs = RNFetchBlob.fs
+
+window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
+window.Blob = Blod
+
 class ProfileScreen extends Component {
     static navigationOptions = {
         header : null
@@ -31,8 +49,8 @@ class ProfileScreen extends Component {
             name : '',
             gender : '',
             birthday : '',
-            address : ''
-
+            address : '',
+            isUpdating : false
         }
     }
 
@@ -46,26 +64,77 @@ class ProfileScreen extends Component {
                 gender,
                 birthday,
                 address,
-                avatar
+                avatar,
             })
         })
     }
 
-    getImage = () => {
-        const imageURL = storageRef.child('taylor.jpg')
-        imageURL.getDownloadURL().then((url) => {
-            this.setImage(url)
-          }).catch(function(error) {
-            // Handle any errors
-            alert(error)
-          });
-    }
-
-    setImage(url) {
-        this.setState({
-            avatar : url
+    writeUserInfo = () => {
+        const database = firebase.database()
+        database.ref(`users/${this.props.user.uid}`).set({
+            name : this.state.name,
+            gender : this.state.gender,
+            birthday : this.state.birthday,
+            address : this.state.address,
+            avatar : this.state.avatar
         })
     }
+
+    uploadImage = (uri, mime = 'img/jpg') => {
+        return new Promise((resolve, reject) => {
+            const uploadUri = Platform.OS === 'ios' ? uri.replace('file://','') : uri
+            const sessionId = new Date().getTime()
+            let uploadBlob = null
+            const imageRef = storage.ref('avatars').child(`${this.props.user.uid}.jpg`)
+
+            fs.readFile(uploadUri, 'base64')
+            .then(data => {
+                return Blod.build(data,{ type : `${mime};BASE64` })
+            })
+            .then(blob => {
+                uploadBlob = blob
+                return imageRef.put(uploadUri, {contentType : mime})
+            })
+            .then(() => {
+                uploadBlob.close()
+                return imageRef.getDownloadURL()
+            })
+            .then(url => {
+                resolve(url)
+            })
+            .catch(error => {
+                reject(error)
+            })
+        })
+    }
+
+
+    pickImage = () => {
+        ImagePicker.showImagePicker(options, (response) => {
+          
+            if (response.didCancel) {
+              console.log('User cancelled image picker');
+            }
+            else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            }
+            else if (response.customButton) {
+              console.log('User tapped custom button: ', response.customButton);
+            }
+            else {
+                this.setState({
+                    isUpdating : true
+                })
+                this.uploadImage(response.uri)
+                .then(url => {
+                    this.setState({avatar : url, isUpdating : false})
+                    this.writeUserInfo()
+                })
+                .catch(error => alert(error))
+            }
+          })
+    }
+
 
     onSettingButtonPressed = () => {
         this.props.navigation.navigate('Setting')
@@ -111,15 +180,20 @@ class ProfileScreen extends Component {
         <Image style={{ width: 130, height: 130, borderRadius: 100, position: 'absolute' }} source={{uri : this.state.avatar}} />
         return (
             <View style={{ flex: 1, backgroundColor: 'white' }}>
+                <Modal transparent = {true} visible = {this.state.isUpdating} onRequestClose = {() => {}}>
+                    <View style = {styles.modal}>
+                        <ActivityIndicator/>
+                    </View>
+                </Modal>
                 <View style={{ flex: 4,  alignItems: 'center', justifyContent: 'center' }}>
-                    <View style={{ width: '100%', height: '50%', backgroundColor: '#1774BA' }}>
+                    <View style={{ width: '100%', height: '50%', backgroundColor: '#2D9CDB' }}>
                         <TouchableOpacity
-                            onPress={() => {this.onSettingButtonPressed()}}
+                            onPress={this.onSettingButtonPressed}
                             style={{ alignSelf: 'flex-end', marginTop: 15, marginRight: 7 }}>
                             <Image style={{ width: 20, height: 20, borderRadius: 50 }} source={require('../../assets/images/setting.png')} />
                         </TouchableOpacity>
                         <TouchableOpacity
-                            onPress={this.onPhotoButtonPressed.bind(this)}
+                            onPress={this.pickImage.bind(this)}
                             style={{ alignSelf: 'flex-end', marginTop: 50, marginRight: 7 }}>
                            <Image style={{ width: 20, height: 20, borderRadius: 50 }} source={require('../../assets/images/camera.png')} />
                         </TouchableOpacity>
@@ -176,3 +250,11 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps,mapDispatchToProps)(ProfileScreen)
+
+const styles = StyleSheet.create({
+    modal : {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+     }   
+})

@@ -11,7 +11,7 @@ render(){
     return(
         <View style = {[styles.container, {flexDirection:'row', marginVertical : 10}]}>
             <View style={styles.avaContainer}>
-                <Image style={styles.image} source={{uri: image}}/>
+                <Image style={styles.image} source={image === '' ? require('../assets/images/non_avatar.jpg'):{uri : image}}/>
             </View>
            <View style= {styles.rowContainer}>
                 <View style={styles.row}>

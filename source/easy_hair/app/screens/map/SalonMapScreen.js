@@ -54,7 +54,6 @@ class SalonMapScreen extends Component {
         super(props);
         this.state = {
             salonsInDatabase : this.props.salonsInDatabase,
-
             markers: [],
 
             // The region that The Map will be shown at the first time
@@ -246,8 +245,8 @@ class SalonMapScreen extends Component {
         this.getSalonsByRating(this.state.ratingFilter);
     }
 
-    onPressDetails = (data) => {
-        this.props.navigation.navigate('DetailSalon',{data});
+    onPressDetails = (data,index,uid) => {
+        this.props.navigation.navigate('DetailSalon',{data,index,uid});
     };
 
 
@@ -384,7 +383,7 @@ class SalonMapScreen extends Component {
                                 <TouchableOpacity
                                     style={styles.infoButton}
                                     onPress={() => {
-                                        this.onPressDetails(marker)
+                                        this.onPressDetails(marker,index,this.props.user.uid)
                                     }}>
                                     <Image source={require('../../assets/images/info.png')}
                                            style={{width: 17, height: 17, marginBottom: 5}}
@@ -565,7 +564,8 @@ class SalonMapScreen extends Component {
 
 function mapStateToProps(state) {
     return {
-        salonsInDatabase : state.Database.salonsInDatabase
+        salonsInDatabase : state.Database.salonsInDatabase,
+        user : state.Auth.user        
     }
 }
 

@@ -19,6 +19,7 @@ const store = createStore(reducers,applyMiddleware(reduxThunk))
 export default class App extends Component {
 
   componentWillMount() {
+    console.disableYellowBox = true
   }
 
   render() {
