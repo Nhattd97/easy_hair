@@ -60,8 +60,8 @@ class SalonMapScreen extends Component {
             region: {
                 latitude: 10.8884278,
                 longitude: 106.7765558,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
+                latitudeDelta: 0.02,
+                longitudeDelta: 0.02,
             },
 
             /**
@@ -404,8 +404,8 @@ class SalonMapScreen extends Component {
 
                 <SlidingUpPanel
                     visible={this.state.visible}
-                    height={height - 200}
-                    draggableRange={{top: height - 200, bottom: 0}}
+                    height={height - 150}
+                    draggableRange={{top: height - 150, bottom: 70}}
                     onRequestClose={() => {
                         this.setState({visible: false, isShowPopUpDialog: false, isShowPicker: false,})
                     }}
@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
     viewPhoneAndLocation:
         {
             position: "absolute",
-            top: 135,
+            top: CARD_HEIGHT * 0.68,
             left: 20,
         },
     cardDescription:
