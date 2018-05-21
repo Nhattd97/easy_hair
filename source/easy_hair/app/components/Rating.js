@@ -7,8 +7,7 @@ class Rating extends Component {
     };
 
     render() {
-
-        const { style, score, score1, score2, score3, score4, score5 } = this.props;
+        const { style, score ,score1, score2, score3, score4, score5 } = this.props;
         return (
             <View style={[styles.container, style, { flexDirection: 'row' }]}>
                 <View style={styles.averageTextContainer}>
@@ -45,7 +44,7 @@ class Rating extends Component {
 
 const styles = StyleSheet.create({
     container: { flexDirection: 'row' ,width:250,aspectRatio:2.5},
-    averageTextContainer: { flex: 2, justifyContent: 'center', alignItems: 'center' },
+    averageTextContainer: { flex: 2, justifyContent: 'center', alignItems: 'flex-start' },
     averageText: { fontWeight: 'bold', fontSize: 50, color: 'green',margin:2, flexDirection:'row', justifyContent:'center' },
     rowContainer: { flex: 4},
     row: { flex: 1, flexDirection:'row'},

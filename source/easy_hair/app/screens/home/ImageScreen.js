@@ -8,6 +8,8 @@ import {
     TouchableOpacity
 } from 'react-native'
 import firebase from 'react-native-firebase'
+import ImageView from 'react-native-image-view'
+import { ImageViewButton } from '../../components'
 
 const { width, height } = Dimensions.get('window');
 
@@ -20,7 +22,9 @@ class ImageScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            album : []
+            album : [],
+            isImageViewVisible : false,
+            currentImage : 'https://scontent.fsgn5-1.fna.fbcdn.net/v/t1.0-9/26734063_1246822755418092_6500198356385146251_n.jpg?_nc_cat=0&_nc_eui2=AeH3awnsxRws9QYo5Z-wdb22_L-4KH9FrBeaVBlrKD02gN7gT0fgHMxeRYnSU8KANd24MuBbLmsmYE_fl-kUnutid-2FVVEapv7YUGfapjt8mg&oh=8a9d5a52cd9842cc8323c28726a05175&oe=5B86D15E'
         }
     }
 
@@ -36,9 +40,17 @@ class ImageScreen extends Component {
         const {params} = this.props.navigation.state
         //alert(images)
         this.setState({
-            album : params.images
+            album : params.images,
         })
 
+    }
+
+    imagePress = (item) =>{
+        alert(item)
+        this.setState({
+            currentImage : item.uri,
+            isImageViewVisible : true
+        })
     }
 
     render() {
@@ -52,15 +64,31 @@ class ImageScreen extends Component {
                     data={this.state.album}
                     refreshing = {true}
                     showsVerticalScrollIndicator={false}
-                    renderItem={({item}) =>
+                    renderItem={({item},index) =>
                     {
-                        return <TouchableOpacity onPress = {() => {}}>
-                            <Image source = {{uri : item}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
-                        </TouchableOpacity>
+                        return <ImageViewButton uri = {item} />
+                //         return <TouchableOpacity onPress = {() => {
+                //             this.setState({
+                //                 isImageViewVisible : true,
+                //             })
+                //         }}>
+                            
+                //             <Image source = {{uri : item}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
+                //             <ImageView
+                //     images = {[{
+                //         source : {uri : item,
+                //             width : wp(100),
+                //             height : wp(100)
+                //         }}]}
+                //     isVisible = {this.state.isImageViewVisible}
+                //     imageIndex = {0}
+                // />
+                //         </TouchableOpacity>
                     }
                     }
                     keyExtractor={(item,index) => index}
                 />
+                
             </View>
         )
     }

@@ -151,7 +151,7 @@ class AlbumScreen extends Component {
                         <Text style = {{fontSize : 50, color : 'white'}}>KIỂU TÓC</Text>
                         <Text style = {{fontSize : 50, color : 'white'}}>{this.state.gender === 'men'?'NAM':'NỮ'}</Text>
                     </View>
-                    <View style = {{flexDirection : 'row', justifyContent : 'space-between', marginHorizontal : 10, marginVertical : 20}}>
+                    <View style = {{flexDirection : 'row', justifyContent : 'space-between', marginVertical : 20}}>
                         {/* <TouchableOpacity onPress = {() => { this._slider1Ref.snapToPrev() }} >
                             <Text>Prev</Text>
                         </TouchableOpacity>

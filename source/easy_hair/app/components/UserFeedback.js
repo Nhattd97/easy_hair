@@ -7,26 +7,39 @@ class UserFeedback extends Component{
     }    
 
 render(){
-    const {image, comment, userName} = this.props;
+    const {image, comment, userName, count} = this.props;
     return(
-        <View style = {[styles.container, {flexDirection:'row', marginVertical : 10}]}>
-            <View style={styles.avaContainer}>
-                <Image style={styles.image} source={image === '' ? require('../assets/images/non_avatar.jpg'):{uri : image}}/>
-            </View>
-           <View style= {styles.rowContainer}>
-                <View style={styles.row}>
+        <View style={[styles.container, { flexDirection: 'row', marginBottom : 15 }]}>
+                <View style={styles.avaContainer}>
+                    <Image style={styles.image} source={image === '' || image === null ? require('../assets/images/non_avatar.jpg') : { uri: image }} />
+                </View>
+                <View style={styles.rowContainer}>
+                    <View style={styles.row}>
                         <Text style={styles.rowText}>{userName}</Text>
-                </View>
-                <View style={styles.row}>
-                    <Image style={styles.rowImage} source={require('../assets/images/5star.png')} />
-                </View>
-                <View style={[styles.row, {marginTop:10}]}>
+                    </View>
+                    <View style={styles.row}>
+                        {
+                            (count == "5") ? <Image style={styles.rowImage} source={require('../assets/images/5star.png')} /> : null
+                        }
+                        {
+                            (count == "4") ? <Image style={styles.rowImage} source={require('../assets/images/4star.png')} /> : null
+                        }
+                           {
+                            (count == "3") ? <Image style={styles.rowImage} source={require('../assets/images/3star.png')} /> : null
+                        }
+                           {
+                            (count == "2") ? <Image style={styles.rowImage} source={require('../assets/images/2star.png')} /> : null
+                        }
+                           {
+                            (count == "1") ? <Image style={styles.rowImage} source={require('../assets/images/1star.png')} /> : null
+                        }
+                    </View>
+                    <View style={styles.row}>
                         <Text style={styles.rowText}>{comment}</Text>
+                    </View>
                 </View>
 
-           </View>
-
-        </View>
+            </View>
     )
 }
 

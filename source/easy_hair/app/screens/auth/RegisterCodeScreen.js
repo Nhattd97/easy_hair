@@ -10,7 +10,9 @@ import {
     ScrollView,
     StatusBar,
     Image,
-    Dimensions
+    Dimensions,
+    Modal,
+    ActivityIndicator
 } from 'react-native';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
@@ -44,6 +46,7 @@ class RegisterCodeScreen extends Component {
                 error: false
             },
             active: false,
+            isSending : false
         };
     }
 
@@ -53,21 +56,40 @@ class RegisterCodeScreen extends Component {
     }
 
     resendPress() {
+        
+        this.setState({
+            isSending : true
+        })
         this.props.AuthActions.sendCode(this.props.phone,() => {
-            alert('sent!')
+            this.setState({
+                isSending : false
+            })
+            alert('Đã gửi lại')
         }, (error) => {
+            this.setState({
+                isSending : false
+            })
             alert(error)
         })
     }
 
     donePress() {
+        this.setState({
+            isSending : true
+        })
         this.props.confirmResult.confirm(this.state.code.text)
       .then((user) => {
+          this.setState({
+              isSending : false
+          })
         this.props.AuthActions.updateUser(user)
         this.props.navigation.navigate('Info')
       })
       .catch((error) => {
-        const { code, message } = error;
+        this.setState({
+            isSending : false
+        })
+        alert(error)
       });
     }
 
@@ -76,6 +98,11 @@ class RegisterCodeScreen extends Component {
         else this.state.active = true
         return (
             <ScrollView style={styles.container}>
+                <Modal transparent = {true} visible = {this.state.isSending} onRequestClose = {() => {}}>
+                    <View style = {styles.modal}>
+                        <ActivityIndicator/>
+                    </View>
+                </Modal>
                 <HeaderCard
                     link={require('../../assets/images/email.png')}
                 >
@@ -208,7 +235,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     proceedBtnOn: {
-        backgroundColor: '#00528f'
+        backgroundColor: '#2D9CDB'
     },
     proceedBtnTitle: {
         color: '#9bbbd4'
@@ -216,4 +243,9 @@ const styles = StyleSheet.create({
     proceedBtnTitleOn: {
         color: '#ffffff'
     },
+    modal : {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+     }
 });
