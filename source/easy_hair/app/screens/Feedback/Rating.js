@@ -8,7 +8,16 @@ class Rating extends Component {
 
     render() {
 
-        const { style, score, score1, score2, score3, score4, score5 } = this.props;
+        const { style, score1, score2, score3, score4, score5 } = this.props;
+        var a = parseFloat(score5)
+        var b = parseFloat(score4)
+        var c = parseFloat(score3)
+        var d = parseFloat(score2)
+        var e = parseFloat(score1)
+
+        var score = ((a*5)+(b*4)+(c*3)+(d*2)+(e))/(a+b+c+d+e);
+
+        score = score.toFixed(1);
         return (
             <View style={[styles.container, style, { flexDirection: 'row' }]}>
                 <View style={styles.averageTextContainer}>
@@ -17,23 +26,23 @@ class Rating extends Component {
                 <View style={styles.rowContainer}>
                     <View style={styles.row}>
                         <Image style={styles.rowImage} source={require('../../assets/images/5star.png')} />
-                        <Text style={styles.rowText}>:{score5}</Text>
+                        <Text style={styles.rowText}>:{(score5)}</Text>
                     </View>
                     <View style={styles.row}>
                         <Image style={styles.rowImage} source={require('../../assets/images/4star.png')} />
-                        <Text style={styles.rowText}>:{score4}</Text>
+                        <Text style={styles.rowText}>:{(score4)}</Text>
                     </View>
                     <View style={styles.row}>
                         <Image style={styles.rowImage} source={require('../../assets/images/3star.png')} />
-                        <Text style={styles.rowText}>:{score3}</Text>
+                        <Text style={styles.rowText}>:{(score3)}</Text>
                     </View>
                     <View style={styles.row}>
                         <Image style={styles.rowImage} source={require('../../assets/images/2star.png')} />
-                        <Text style={styles.rowText}>:{score2}</Text>
+                        <Text style={styles.rowText}>:{(score2)}</Text>
                     </View>
                     <View style={styles.row}>
                         <Image style={styles.rowImage} source={require('../../assets/images/1star.png')} />
-                        <Text style={styles.rowText}>:{score1}</Text>
+                        <Text style={styles.rowText}>:{(score1)}</Text>
                     </View>
 
                 </View>
@@ -44,7 +53,7 @@ class Rating extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: { flexDirection: 'row' ,width:250,aspectRatio:2.5},
+    container: { flexDirection: 'row' ,width:250, aspectRatio:2.5},
     averageTextContainer: { flex: 2, justifyContent: 'center', alignItems: 'center' },
     averageText: { fontWeight: 'bold', fontSize: 50, color: 'green',margin:2, flexDirection:'row', justifyContent:'center' },
     rowContainer: { flex: 4},

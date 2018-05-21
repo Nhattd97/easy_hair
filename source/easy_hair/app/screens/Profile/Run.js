@@ -24,7 +24,7 @@ export default class Run extends Component {
   render() {
     return (
       <View style={{ flex: 1}}>
-          <UserFeedback image='https://s3.r29static.com//bin/entry/c6b/340x408/1772845/image.png' userName="Hoàng Lâm"  count="2" />
+        <Rating score1='1' score2="1" score3="1" score4 ="1" score5="2" />
       </View>
     );
   }
@@ -34,4 +34,4 @@ export default class Run extends Component {
 {/* <CardImage style={{ width: 100, height: 120 }} uri='https://s3.r29static.com//bin/entry/c6b/340x408/1772845/image.png' title="Nam" /> */ }
 {/* <InputTextForButton text="abc" color='white' style={{width:100}} side="right" /> */}
 {/* <Rating score= "4.1" score1="1" score2="2" score3="3" score4 ="4" score5="5" /> */}
-
+{/* <UserFeedback image='http://sv1.upsieutoc.com/2018/05/16/hightight.jpg' userName="Hoàng Lâm"  count="2" /> */}
