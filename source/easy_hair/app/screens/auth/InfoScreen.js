@@ -163,7 +163,7 @@ class InfoScreen extends Component {
                             <View style={{borderRadius: 6,backgroundColor: '#fff', width: 100, height: 40, flex:.5}}>
                             <Picker
                                 selectedValue={this.state.selected}
-                                style={styles.sPickerGender}
+                                style={[styles.sPickerGender, {marginTop: -5}]}
                                 onValueChange={(itemValue, itemIndex) => this.setState({ selected: itemValue })}>
                                 <Picker.Item label="Nam" value="Male" />
                                 <Picker.Item label="Nữ" value="Female" />
@@ -177,7 +177,7 @@ class InfoScreen extends Component {
 
                             <View style={{ flexDirection: 'row' }}>
                                 <TextInput // key={idDoB}
-                                    style={styles.sTextInputDoB}
+                                    style={[styles.sTextInputDoB, {paddingTop: 10, paddingLeft: 6}]}
                                     underlineColorAndroid='transparent'
                                     placeholder="18/07/1997"
                                     placeholderTextColor="#AFAFAF"
@@ -199,6 +199,17 @@ class InfoScreen extends Component {
                                     mode='date' />
 
                             </View>
+
+                            <Text
+                                style={styles.sTextInputTitle}>
+                                Địa chỉ
+                            </Text>
+
+                            <TextInput style={styles.sTextInputName}
+                                       underlineColorAndroid='transparent'
+                                       placeholder='Địa chỉ'
+                                       placeholderTextColor='#AFAFAF'
+                                       onChangeText={(address) => { this.setState({ address }); }} />
 
                             <Text style={styles.sTextInputTitle}>
                                 Mật khẩu
@@ -344,6 +355,7 @@ const styles = StyleSheet.create({
         height: 35,
         fontSize: 13,
         paddingLeft: 12,
+        paddingTop: 10,
     },
 
     sPickerGender: {
