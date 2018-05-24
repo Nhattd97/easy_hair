@@ -16,11 +16,7 @@ import {
     Alert,
     AsyncStorage,
     Dimensions
-<<<<<<< HEAD
  } from 'react-native';
-=======
-} from 'react-native';
->>>>>>> features/re-design-2
 import * as AuthActions from '../../actions/AuthAction'
 import * as DatabaseActions from '../../actions/DatabaseAction'
 import {connect} from 'react-redux'
@@ -116,7 +112,6 @@ class LoginScreen extends Component {
     {
         this.imageBackground =
             (<ImageBackground style={styles.background}
-                              blurRadius={1}
                               source={require('../../assets/images/Background.png')}>
 
                 <View style={{marginTop: "27%", paddingLeft: "12%"}}>
@@ -242,7 +237,6 @@ function mapDispatchToProps(dispatch) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen)
 
-const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
     container: {
@@ -258,11 +252,7 @@ const styles = StyleSheet.create({
 
     background: {
         flex: 1,
-<<<<<<< HEAD
-        width:'150%',
-=======
         width: '100%',
->>>>>>> features/re-design-2
         height: height,
     },
 
