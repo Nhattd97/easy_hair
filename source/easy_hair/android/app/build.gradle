@@ -100,9 +100,15 @@ android {
     defaultConfig {
         applicationId "com.easy_hair"
         minSdkVersion 16
+<<<<<<< HEAD
         targetSdkVersion 22
         versionCode 2
         versionName "2.0"
+=======
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+>>>>>>> features/re-design-2
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
@@ -153,7 +159,7 @@ dependencies {
     }
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.android.support:appcompat-v7:23.0.1"
-    implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation ("com.facebook.react:react-native:0.54.4") { force = true } // From node_modules
     implementation "com.google.android.gms:play-services-base:12.0.1"
     implementation "com.google.firebase:firebase-core:12.0.1"
     implementation "com.google.firebase:firebase-auth:12.0.1"
