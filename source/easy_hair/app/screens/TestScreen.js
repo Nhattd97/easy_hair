@@ -13,6 +13,7 @@ import {
     Platform,
     ImageBackground,
     FlatList,
+    Modal
 } from 'react-native'
 import firebase from 'react-native-firebase'
 import Carousel, {Pagination} from 'react-native-snap-carousel'
@@ -65,12 +66,54 @@ const itemHorizontalMargin = wp(2);
  var storageRef = firebase.storage()
  const path = 'Users/TranNhat/Documents/easy_hair/source/easy_hair/app/assets/images/marker.png'
 
+//  const images = [
+//     {
+//         source : {
+//             uri : 'http://sv1.upsieutoc.com/2018/05/18/njj.jpg'
+//         },
+//         height : 720
+//     },
+//     {
+//         source : {
+//             uri : 'http://sv1.upsieutoc.com/2018/05/18/growlonghairmain2.jpg'
+//         }
+//     },
+//     {
+//         source : {
+//             uri : 'http://sv1.upsieutoc.com/2018/05/18/njj.jpg'
+//         }
+//     },
+//     {
+//         source : {
+//             uri : 'http://sv1.upsieutoc.com/2018/05/18/1274927e06a36e9ca5aa55bb982af7fe--men-hair--medium--mens-hairstyles-medium.jpg'
+//         }
+//     },
+// ]
+
+const images = [
+    {
+            url : 'http://sv1.upsieutoc.com/2018/05/18/njj.jpg'
+    },
+    // {
+    //         url : 'http://sv1.upsieutoc.com/2018/05/18/growlonghairmain2.jpg'
+    // },
+    // {
+    //         url : 'http://sv1.upsieutoc.com/2018/05/18/njj.jpg'
+    // },
+    // {
+    //         url : 'http://sv1.upsieutoc.com/2018/05/18/1274927e06a36e9ca5aa55bb982af7fe--men-hair--medium--mens-hairstyles-medium.jpg'
+    // },
+]
+
 export default class TestScreen extends Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            avatarSource : ''
+            avatarSource : '',
+            
+            imageIndex :  0,
+            isImageViewVisible : false
         }
     }
 
@@ -135,17 +178,41 @@ export default class TestScreen extends Component {
 
     render() {
         return(
-            <View>
-                <View>
-                    {
-                        this.state.avatarSource !== '' || this.state.avatarSource !== null ? <Image style = {{width : 50,height : 50}} source = {{uri : this.state.avatarSource}}/> : {}
-                    }
-                </View>
-                <View>
-                    <TouchableOpacity onPress = {this.pickImage}>
-                    <Text>Upload</Text>
-                    </TouchableOpacity>
-                </View>
+            <View style = {styles.container}>
+                {/* {
+                    images.map((image, index) => {
+                        <TouchableOpacity onPress = {
+                            () => {
+                                this.setState({
+                                    imageIndex : index,
+                                    isImageViewVisible : true
+                                })
+                            }
+                        }>
+                        <Image
+                            style = {{width : 200, height : 200}}
+                            source = {image.source}
+                            resizeMode = 'cover'
+                        />
+                        </TouchableOpacity>
+                    })
+                } */}
+                {/* <TouchableOpacity onPress = {() =>{
+                    this.setState({
+                        isImageViewVisible : true
+                    })
+                }}>
+                    <Text>Text</Text>
+                </TouchableOpacity>
+                
+                <ImgageView
+                    images = {images}
+                    imageIndex = {this.state.imageIndex}
+                    isVisible = {this.state.isImageViewVisible}
+                /> */}
+                {/* <Modal visible = {this.sta} onre>
+                    <ImageViewer imageUrls = {images}/>
+                </Modal> */}
             </View>
         )
     }

@@ -16,6 +16,7 @@ class AlbumDetail extends Component {
         const image = this.props.album;
         return (
             <Card>
+                <TouchableOpacity onPress = {this.props.onPress}>
                 <CardItem>
                     <Image
                         style = {styles.imageStyle}
@@ -24,14 +25,15 @@ class AlbumDetail extends Component {
                 </CardItem>
 
                 <CardItem>
-                    <TouchableOpacity onPress = {this.props.onPress} style = {styles.button1Style}>
+                    <View  style = {styles.button1Style}>
                         <Text 
                             style = {styles.textStyle}
                         >
                             {this.props.title}
                         </Text>
-                    </TouchableOpacity>
+                    </View>
                 </CardItem>
+                </TouchableOpacity>
             </Card>
         );
     }

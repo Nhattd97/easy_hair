@@ -14,12 +14,15 @@ import {
     TextInput,
     TouchableHighlight,
     Alert,
-    AsyncStorage
+    AsyncStorage,
+    Dimensions
  } from 'react-native';
 import * as AuthActions from '../../actions/AuthAction'
 import * as DatabaseActions from '../../actions/DatabaseAction'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
+
+const {width, height} = Dimensions.get('window')
 
 class LoginScreen extends Component {
     static navigationOptions = {
@@ -235,7 +238,7 @@ export default connect(mapStateToProps,mapDispatchToProps)(LoginScreen)
     background:{ 
         flex: 1,
         width:'150%',
-        height: '100%',
+        height: height,
     },
 
     title:{

@@ -8,7 +8,7 @@ import {
     TouchableOpacity
 } from 'react-native'
 import firebase from 'react-native-firebase'
-import ImageView from 'react-native-image-view'
+import ZoomImage from 'react-native-zoom-image'
 import { ImageViewButton } from '../../components'
 
 const { width, height } = Dimensions.get('window');
@@ -66,7 +66,11 @@ class ImageScreen extends Component {
                     showsVerticalScrollIndicator={false}
                     renderItem={({item},index) =>
                     {
-                        return <ImageViewButton uri = {item} />
+                        return <ZoomImage
+                            source = {{uri : item}}
+                            imgStyle = {{width : wp(46), height : wp(46), marginRight : wp(3), marginBottom : wp(3)}}
+                        />
+                        //return <ImageViewButton uri = {item} />
                 //         return <TouchableOpacity onPress = {() => {
                 //             this.setState({
                 //                 isImageViewVisible : true,

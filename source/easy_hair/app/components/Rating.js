@@ -7,7 +7,8 @@ class Rating extends Component {
     };
 
     render() {
-        const { style, score ,score1, score2, score3, score4, score5 } = this.props;
+        const { style ,score1, score2, score3, score4, score5 } = this.props;
+        const score = this.props.score.toFixed(1)
         return (
             <View style={[styles.container, style, { flexDirection: 'row' }]}>
                 <View style={styles.averageTextContainer}>

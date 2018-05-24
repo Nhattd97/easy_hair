@@ -5,7 +5,6 @@ import {
     Dimensions,
     View
 } from 'react-native'
-import ImageView from 'react-native-image-view'
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,14 +30,14 @@ class ImageViewButton extends Component {
                 })
             }}>
                 <Image source = {{uri : this.props.uri}}  style = {{width : dimension, height : dimension , marginRight : wp(3), marginBottom : wp(3)}}/>
-                <ImageView
+                {/* <ImageView
                     images = {[{
                         source : {uri : this.props.uri,
                             width : 200,
                             height : 200
                         }}]}
                     isVisible = {this.state.isImageViewVisible}
-                />
+                /> */}
             </TouchableOpacity>
         )
     }
