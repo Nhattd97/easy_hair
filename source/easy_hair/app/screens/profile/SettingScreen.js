@@ -785,7 +785,7 @@ export default class SettingScreen extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.body}>
-                    <TouchableOpacity onPress={() => this.uploadData()}>
+                    <TouchableOpacity onPress={() => this.changePassword()}>
                         <View style={styles.bodyCard}>
                             <Text style={styles.bodyCardContentText}>Thay đổi mật khẩu</Text>
                             <View style={styles.headerRightBtn}>

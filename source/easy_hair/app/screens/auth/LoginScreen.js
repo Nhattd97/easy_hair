@@ -69,7 +69,8 @@ class LoginScreen extends Component {
             password: this.state.password
         }
         this.props.AuthActions.login(user, () => {
-            this.signInAsync()
+            this.setState({isLoading: false})
+            this.props.navigation.navigate('App')
 
         }, (error) => {
             this.setState({isLoading: false})

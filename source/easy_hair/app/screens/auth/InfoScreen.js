@@ -47,16 +47,17 @@ class InfoScreen extends Component {
             password: '',
             passwordConfirm: '',
             name: '',
-            birthday : '18/07/1997',
-            address : 'Binh duong'
+            birthday : '',
+            address : ''
         }
     }
 
     writeUserInfo = (userId) => {
+        const birthdayFormat = this.state.chosenDate.replace(new RegExp('-','g'),'/')
         this.database.ref(`users/${userId}`).set({
             name : this.state.name,
             gender : this.state.selected,
-            birthday : this.state.birthday,
+            birthday : birthdayFormat,
             address : this.state.address,
             avatar : ''
         })
@@ -87,6 +88,7 @@ class InfoScreen extends Component {
 
     continueChecker = (userId) => {
         // return this.state.password == this.state.passwordConfirm ? true: false
+  
 
         if (this.state.password != this.state.passwordConfirm) {
             alert("Your password confirm is NOT match!");

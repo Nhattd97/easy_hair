@@ -21,6 +21,7 @@ import { getCenter } from 'geolib';
 import StarRating from 'react-native-star-rating'
 import Prompt from 'rn-prompt'
 import call from 'react-native-phone-call'
+import ZoomImage from 'react-native-zoom-image'
 
 
 const { width, height } = Dimensions.get('window');
@@ -65,9 +66,9 @@ class SalonDetailScreen extends PureComponent {
             background : data.background,
             promptVisible : false,
             content : '',
-            images : ['https://i.imgur.com/UYiroysl.jpg','https://i.imgur.com/UPrs1EWl.jpg','https://i.imgur.com/MABUbpDl.jpg','https://i.imgur.com/KZsmUi2l.jpg','https://i.imgur.com/UYiroysl.jpg','https://i.imgur.com/UPrs1EWl.jpg'],
+            images : data.images,
             feedback : data.feedback =='empty' ? [] : data.feedback ,
-            description : 'Hoang Huy chạy thử nghiệm lần đầu tiên tại Hà Nội vào tháng 5/2015 và mất 1 năm để tìm ra hướng đi như hiện nay. Những anh em sáng lập Hoang Huy tin tưởng rằng người thợ Việt Nam rất tận tâm, khéo léo trong các nhóm ngành nghề cắt tóc, làm móng, massage… Nếu đưa ra một mô hình mới ứng dụng công nghệ và quy trình hợp lý, Hoang Huy có thể giúp thế mạnh này được chắp cánh, mang lại dịch vụ tuyệt vời cho khách hàng, tạo dựng môi trường tốt hơn cho anh em thợ. Theo đó, doanh nghiệp cũng có khả năng phát triển bền vững tại Việt Nam và vươn ra nước ngoài.'
+            description : 'Chưa có thông tin mô tả'
         }
     }
 
@@ -229,7 +230,11 @@ class SalonDetailScreen extends PureComponent {
                             showsVerticalScrollIndicator={false}
                             renderItem={({item}) =>
                             {
-                                return <Image source = {{uri : item}}  style = {{width : 100, height : 150 , marginRight : 5}}/>
+                                //return <Image source = {{uri : item}}  style = {{width : 100, height : 150 , marginRight : 5}}/>
+                                return <ZoomImage
+                                            source = {{uri : item}}
+                                            imgStyle = {{width : 100, height : 150, marginRight : 5}}
+                                        />
                             }
                             }
                             keyExtractor={(item,index) => item}

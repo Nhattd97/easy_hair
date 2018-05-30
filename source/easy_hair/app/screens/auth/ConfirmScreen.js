@@ -17,7 +17,7 @@ export default class ConfirmScreen extends Component {
         header: (props) => (
             <View style={styles.header}>
                 <View>
-                    <Text style={styles.headerTitle}>{'QUÊN MẬT KHẨU'}</Text>
+                    <Text style={styles.headerTitle}>{'ĐĂNG KÍ'}</Text>
                 </View>
             </View>
         ),
