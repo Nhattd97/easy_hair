@@ -1,4 +1,4 @@
-import { StackNavigator } from 'react-navigation'
+import {StackNavigator} from 'react-navigation'
 import RegisterScreen from '../screens/auth/RegisterScreen'
 import RegisterCodeScreen from '../screens/auth/RegisterCodeScreen'
 import CreatePasswordScreen from '../screens/auth/CreatePasswordScreen'
@@ -9,35 +9,35 @@ import ConfirmScreen from '../screens/auth/ConfirmScreen'
 import InfoScreen from '../screens/auth/InfoScreen'
 
 const AuthStack = StackNavigator(
-    {
-        Register : {
-            screen : RegisterScreen
-        },
-        RegisterCode : {
-            screen : RegisterCodeScreen
-        },
-        CreatePassword : {
-            screen : CreatePasswordScreen
-        },
-        RecoveryCode : {
-            screen : RecoveryCodeScreen
-        },
-        ForgotPassword : {
-            screen : ForgotPasswordScreen
-        },
-        Login : {
-            screen : LoginScreen
-        },
-        Confirm : {
-            screen : ConfirmScreen
-        },
-        Info : {
-            screen : InfoScreen
-        },
+  {
+    Register: {
+      screen: RegisterScreen
     },
-    {
-        initialRouteName : 'Login'
-    }
+    RegisterCode: {
+      screen: RegisterCodeScreen
+    },
+    CreatePassword: {
+      screen: CreatePasswordScreen
+    },
+    RecoveryCode: {
+      screen: RecoveryCodeScreen
+    },
+    ForgotPassword: {
+      screen: ForgotPasswordScreen
+    },
+    Login: {
+      screen: LoginScreen
+    },
+    Confirm: {
+      screen: ConfirmScreen
+    },
+    Info: {
+      screen: InfoScreen
+    },
+  },
+  {
+    initialRouteName: 'Login'
+  }
 )
 
 export default AuthStack

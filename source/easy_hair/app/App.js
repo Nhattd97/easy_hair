@@ -1,20 +1,12 @@
-
-
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import React, {Component} from 'react';
 import Routes from './routes/index'
-import { Provider } from 'react-redux'
-import { createStore,applyMiddleware } from 'redux'
+import {Provider} from 'react-redux'
+import {applyMiddleware, createStore} from 'redux'
 import reducers from './reducers/index'
 import reduxThunk from 'redux-thunk'
 
 
-const store = createStore(reducers,applyMiddleware(reduxThunk))
+const store = createStore(reducers, applyMiddleware(reduxThunk))
 
 export default class App extends Component {
 
@@ -24,7 +16,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider store = {store}>
+      <Provider store={store}>
         <Routes/>
       </Provider>
     );

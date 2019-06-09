@@ -1,11 +1,5 @@
-import React, { Component } from 'react';
-import {
-  ActivityIndicator,
-  AsyncStorage,
-  StatusBar,
-  StyleSheet,
-  View,
-} from 'react-native';
+import React, {Component} from 'react';
+import {ActivityIndicator, AsyncStorage, StatusBar, StyleSheet, View,} from 'react-native';
 import firebase from 'react-native-firebase'
 
 export default class AuthLoadingScreen extends Component {
@@ -13,25 +7,24 @@ export default class AuthLoadingScreen extends Component {
     super(props);
     this._bootstrapAsync();
     this.state = {
-      isLoggedIn : false,
-      user : null
+      isLoggedIn: false,
+      user: null
     }
   }
 
   componentDidMount() {
-      this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-        this.setState({
-          user
-        });
-
+    this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
+      this.setState({
+        user
       });
-    }
 
-    
+    });
+  }
+
+
   componentWillUnmount() {
     this.authSubscription()
   }
-  
 
 
   _bootstrapAsync = async () => {
@@ -43,17 +36,17 @@ export default class AuthLoadingScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <ActivityIndicator />
-        <StatusBar barStyle="default" />
+        <ActivityIndicator/>
+        <StatusBar barStyle="default"/>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-  });
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});
